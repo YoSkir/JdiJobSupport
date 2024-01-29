@@ -1,0 +1,16 @@
+﻿<Controls:MetroWindow x:Class="JDI_ReportMaker.MainWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      Title="JDI Exel 製作"
+                      Height="600"
+                      Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Button Content="選擇報表" HorizontalAlignment="Left" Margin="460,37,0,0" VerticalAlignment="Top" Click="ButtonSelectExcel_Click" Grid.Column="1"/>
+        <TextBox x:Name="textBoxFilePath" IsReadOnly="True" Grid.ColumnSpan="2" Margin="20,41,371,508"/>
+    </Grid>
+</Controls:MetroWindow>
