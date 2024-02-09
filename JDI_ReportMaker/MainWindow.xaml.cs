@@ -22,10 +22,22 @@ namespace JDI_ReportMaker
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        private readonly Dictionary<string, string> fileName 
+            = new Dictionary<string, string> { {"日報表", "佳帝科技員工日報表 "},
+                                               {"周報表", "佳帝科技員工周報表 "},
+                                               {"工時表", "佳帝科技員工工時表 "}};
         public MainWindow()
         {
+            initialData();
             InitializeComponent();
         }
+        /// <summary>
+        /// 初始化資料
+        /// </summary>
+        private void initialData()
+        {
+        }
+
         private void ButtonSelectExcel_Click(Object sender,RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -37,128 +49,194 @@ namespace JDI_ReportMaker
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void SaveFileButton_Click(object sender, RoutedEventArgs e)
         {
-            string[] filePath = filePathTextBox.Text.Split('.');
-            try
+            if (inputCheck())
             {
-                createTestXls(filePathTextBox.Text, filePath[0]+"幹." + filePath[1]);
-                //CopyExcelFile(filePathTextBox.Text, filePath[0]+" test ." + filePath[1]);
-                resultLabel.Content = "儲存成功";
-            }
-            catch(Exception ex)
-            {
-                resultLabel.Content = "儲存失敗";
-                testyo.Text= ex.Message;
-                MessageBox.Show(ex.Message);
-            }
+                try
+                {
+                    //做報表種類判斷
+                    IWorkbook target = loadFile(filePathTextBox.Text);
+                    staffDataWrite(target);
+                    saveFile(target, FileNameEnum.日報表);
+                    resultLabel.Content = "儲存成功";
+                }catch (Exception ex)
+                {
+                    resultLabel.Content = "儲存失敗";
+                    logLabel.Content = ex.Message;
+                }
 
+            }
+            else
+            {
+                logLabel.Content = "請確認檔案路徑、員工資料";
+            }
         }
-        private void createTestXls(string sourceFilePath,string targetFilePath)
+        /// <summary>
+        /// 確認員工姓名、編號、來源檔案、目的地是否有輸入
+        /// </summary>
+        /// <returns></returns>
+        private bool inputCheck()
+        {
+            return nameTextbox.Text.Length > 0&&
+                departmentCbox.Text.Length > 0&&
+                filePathTextBox.Text.Length > 0&&
+                savePathTextBox.Text.Length>0;
+        }
+        /// <summary>
+        /// 將員工姓名、日期寫入
+        /// </summary>
+        private void staffDataWrite(IWorkbook target)
+        {
+            overwriteFile(target, 0, 5, 0, "姓名: "+nameTextbox.Text);
+            overwriteFile(target, 0, 5, 3, "部門: "+departmentCbox.Text);
+            overwriteFile(target, 0, 5, 7, "日期: "+DateTime.Now.ToString("yyyy/MM/dd"));
+        }
+        /// <summary>
+        /// 檔案資料單格寫入(不取代原有內容)
+        /// </summary>
+        /// <param name="target">目標檔案</param>
+        /// <param name="sheet">工作表</param>
+        /// <param name="row">列</param>
+        /// <param name="cell">格</param>
+        /// <param name="value">指定內容</param>
+        private void writeFile(IWorkbook target,int sheet,int row,int cell,string value)
         {
             try
             {
-                IWorkbook sourceWorkbook;
-                using (FileStream file=new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read))
+                ISheet isheet = target.GetSheetAt(sheet);
+                if(isheet != null)
                 {
-                    sourceWorkbook=new HSSFWorkbook(file);
+                    IRow irow=isheet.GetRow(row);
+                    if (irow != null)
+                    {
+                        ICell icell=irow.GetCell(cell);
+                        if(icell != null)
+                        {
+                            icell.SetCellValue(icell.StringCellValue+" "+value);
+                        }
+                    }
                 }
-                using(FileStream file=new FileStream(targetFilePath, FileMode.Create, FileAccess.Write))
-                {
-                    sourceWorkbook.Write(file);
-                }
-
             }
             catch
             {
+                resultLabel.Content = "寫入失敗";
+                throw;
+            }
+        }
+        /// <summary>
+        /// 檔案資料單格寫入(取代原有內容)
+        /// </summary>
+        /// <param name="target">目標檔案</param>
+        /// <param name="sheet">工作表</param>
+        /// <param name="row">列</param>
+        /// <param name="cell">格</param>
+        /// <param name="value">指定內容</param>
+        private void overwriteFile(IWorkbook target, int sheet, int row, int cell, string value)
+        {
+            try
+            {
+                ISheet isheet = target.GetSheetAt(sheet);
+                if (isheet != null)
+                {
+                    IRow irow = isheet.GetRow(row);
+                    if (irow != null)
+                    {
+                        ICell icell = irow.GetCell(cell);
+                        if (icell != null)
+                        {
+                            icell.SetCellValue(value);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                resultLabel.Content = "寫入失敗";
                 throw;
             }
         }
 
         /// <summary>
-        /// 複製並另存xls檔
+        /// 讀取目標報表
         /// </summary>
-        /// <param name="sourceFilePath">原檔的位置與名稱</param>
-        /// <param name="targerFilePath">另存檔案的位置與名稱</param>
-        private void CopyExcelFile(string sourceFilePath,string targerFilePath)
+        /// <param name="sourcePath">目標報表之路徑</param>
+        /// <returns>回傳讀取完之報表</returns>
+        private IWorkbook loadFile(string sourcePath)
         {
+            IWorkbook sourceWorkbook;
             try
             {
-                using (FileStream sourceFile = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read))
+                using(FileStream file=new FileStream(sourcePath, FileMode.Open, FileAccess.Read))
                 {
-                    IWorkbook sourceWorkbook;
-                    if (System.IO.Path.GetExtension(sourceFilePath).Equals(".xls", StringComparison.OrdinalIgnoreCase))
-                    {
-                        sourceWorkbook = new HSSFWorkbook(sourceFile);
-                    }
-                    else
-                    {
-                        MessageBox.Show("檔案格式不正確，請選取.xls檔");
-                        return;
-                    }
-
-                    IWorkbook targetWorkbook = new HSSFWorkbook();
-                    //遍歷工作表
-                    for (int i = 0; i < sourceWorkbook.NumberOfSheets; i++)
-                    {
-                        ISheet sourceSheet = sourceWorkbook.GetSheetAt(i);
-                        ISheet targetSheet = targetWorkbook.CreateSheet(sourceSheet.SheetName);
-                        //遍歷工作表的行
-                        for (int j = 0; j < sourceSheet.LastRowNum; j++)
-                        {
-                            IRow sourceRow = sourceSheet.GetRow(j);
-                            if(sourceRow != null)
-                            {
-                                IRow targetRow = targetSheet.CreateRow(j);
-                                //遍歷工作表的格
-                                for (int k = 0; k < sourceRow.LastCellNum+1; k++)
-                                {
-                                    ICell sourceCell = sourceRow.GetCell(k);
-                                    if (sourceCell != null)
-                                    {
-                                        ICell targetCell = targetRow.CreateCell(k, sourceCell.CellType);
-                                        switch (sourceCell.CellType)
-                                        {
-                                            case CellType.Boolean:
-                                                targetCell.SetCellValue(sourceCell.BooleanCellValue); break;
-                                            case CellType.String:
-                                                targetCell.SetCellValue(sourceCell.StringCellValue); break;
-                                            case CellType.Numeric:
-                                                targetCell.SetCellValue(sourceCell.NumericCellValue);break;
-                                            default:targetCell.SetCellValue(sourceCell.RichStringCellValue);break ;
-                                        }
-                                        ICellStyle cellStyle = targetWorkbook.CreateCellStyle();
-                                        cellStyle.CloneStyleFrom(sourceCell.CellStyle);
-                                        targetCell.CellStyle = cellStyle;
-                                    }
-                                }
-                            }
-                            mergeRegion(sourceSheet, targetSheet);
-                        }
-                    }
-                    //另存新檔
-                    using(FileStream newFile=new FileStream(targerFilePath, FileMode.Create, FileAccess.Write))
-                    {
-                        targetWorkbook.Write(newFile);
-                    }
+                    sourceWorkbook = new HSSFWorkbook(file);
                 }
-            }catch
+            }
+            catch
             {
-                throw ;
+                resultLabel.Content = "讀取失敗";
+                throw;
+            }
+            return sourceWorkbook;
+        }
+        /// <summary>
+        /// 另存xls檔
+        /// </summary>
+        /// <param name="sourceWorkbook">原檔</param>
+        /// <param name="targerFilePath">另存檔案的位置與名稱</param>
+        private void saveFile(IWorkbook sourceWorkbook,FileNameEnum fileNameEnum)
+        {
+            //設定檔名:報表名+員工名+日期
+            string? date = datePicker.Text.Length == 0 ? DateTime.Today.ToString("MMdd") :
+                datePicker.SelectedDate?.ToString("MMdd");
+            string fileNameStr = "/" + fileName[fileNameEnum.ToString()] + " " + nameTextbox.Text + " " + date + ".xls";
+            string targetFilePath=savePathTextBox.Text+ fileNameStr;
+            try
+            {
+                using(FileStream file=new FileStream(targetFilePath, FileMode.Create, FileAccess.Write))
+                {
+                    sourceWorkbook.Write(file);
+                }
+            }
+            catch
+            {
+                resultLabel.Content = "儲存失敗";
+                throw;
             }
         }
-        private void mergeRegion(ISheet sourceSheet,ISheet targetSheet)
+
+
+        private void dataConfirmButton_Click(object sender, RoutedEventArgs e)
         {
-            int numberOfMergedRegion = sourceSheet.NumMergedRegions;
-            for(int mergeIndex=0; mergeIndex<numberOfMergedRegion; mergeIndex++)
+            if(nameTextbox.Text.Length < 1)
             {
-                CellRangeAddress mergedRegion=sourceSheet.GetMergedRegion(mergeIndex);
-                try
+                logLabel.Content="請填寫員工姓名";
+            }
+            else if(departmentCbox.Text.Length < 1)
+            {
+                logLabel.Content = "請選擇部門";
+            }
+            else
+            {
+                string date = DateTime.Now.ToString("yyyy/MM/dd");
+                if(datePicker.Text.Length > 0)
                 {
-                    targetSheet.AddMergedRegion(new CellRangeAddress(mergedRegion.FirstRow, mergedRegion.LastRow,
-                                                                    mergedRegion.FirstColumn, mergedRegion.LastColumn));
+                    date=datePicker.Text;
                 }
-                catch { }
+                testyo.Text = nameTextbox.Text + "\n" + departmentCbox.Text+"\n"+date;
+            }
+        }
+
+        private void selectLocateButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFolderDialog openFolderDialog = new OpenFolderDialog() {
+                Title = "請選擇目標位置",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                Multiselect = false
+            } ;
+            if (openFolderDialog.ShowDialog() == true)
+            {
+                savePathTextBox.Text = openFolderDialog.FolderName;
             }
         }
     }
