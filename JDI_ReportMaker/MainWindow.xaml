@@ -10,23 +10,16 @@
             <ColumnDefinition Width="0*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="selectFileButton" Content="選擇報表" HorizontalAlignment="Left" Margin="458,45,0,0" VerticalAlignment="Top" Click="ButtonSelectExcel_Click" Grid.Column="1" Height="35" Width="69"/>
-        <TextBox x:Name="filePathTextBox" IsReadOnly="True" Grid.ColumnSpan="2" Margin="29,50,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="388"/>
         <Button x:Name="saveFileButton" Content="存檔" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="561,468,0,0" VerticalAlignment="Top" Click="SaveFileButton_Click"/>
-        <Label x:Name="resultLabel" Content="請填入工作內容" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="641,467,0,0" VerticalAlignment="Top" Foreground="White" Width="134"/>
-        <TextBox x:Name="testyo" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="52,127,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="301" Height="286"/>
-        <TextBox x:Name="nameTextbox" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="561,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label Content="姓名" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="561,20,0,0" VerticalAlignment="Top"/>
-        <Label Content="部門" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="561,97,0,0" VerticalAlignment="Top"/>
-        <Label Content="日期(今日免填)" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="561,174,0,0" VerticalAlignment="Top"/>
-        <DatePicker x:Name="datePicker" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="561,208,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="dataConfirmButton" Content="確認資料" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="723,207,0,0" VerticalAlignment="Top" Click="dataConfirmButton_Click"/>
-        <Label x:Name="logLabel" Content="" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="29,530,0,0" VerticalAlignment="Top" Width="592"/>
+        <Label x:Name="resultLabel" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="625,468,0,0" VerticalAlignment="Top" Foreground="White" Width="134" Height="26"/>
+        <Label Content="日期(今日免填)" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="29,23,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="datePicker" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="135,22,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="dataConfirmButton" Content="設定" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="743,21,0,0" VerticalAlignment="Top" Click="settingWindowButton_Click"/>
+        <Label x:Name="logLabel" Content="" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="29,517,0,0" VerticalAlignment="Top" Width="746" Height="58"/>
         <Button x:Name="selectLocateButton" Content="選擇目的" HorizontalAlignment="Left" Margin="458,463,0,0" VerticalAlignment="Top" Click="selectLocateButton_Click" Grid.Column="1" Height="35" Width="69"/>
         <TextBox x:Name="savePathTextBox" IsReadOnly="True" Grid.ColumnSpan="2" Margin="29,468,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="388"/>
-        <ComboBox x:Name="departmentCbox" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="561,127,0,0" VerticalAlignment="Top" Width="120">
-            <ComboBoxItem Content="RD"/>
-            <ComboBoxItem Content="SD"/>
-        </ComboBox>
+        <Button x:Name="todayButton" Content="今天" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="245,22,0,0" VerticalAlignment="Top" Click="todayButton_Click"/>
+        <CheckBox x:Name="godModeCheckBox" Content="無視檔案異常" Grid.ColumnSpan="2" Margin="467,381,223,141"/>
+
     </Grid>
 </Controls:MetroWindow>

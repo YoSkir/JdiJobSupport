@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\App.xaml
-21900145863
+2-451649182
 
-8-160425263
+15-1011261231
 213-1785193746
-MainWindow.xaml;PopupWindow.xaml;
+MainWindow.xaml;SettingWindow.xaml;
 
 False
 

@@ -13,4 +13,19 @@
     <PackageReference Include="NPOI" Version="2.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="defaultSetting.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>defaultSetting.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="defaultSetting.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>defaultSetting.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
 </Project>

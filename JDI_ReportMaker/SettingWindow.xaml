@@ -1,0 +1,33 @@
+﻿<Window x:Class="JDI_ReportMaker.SettingWindow"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:JDI_ReportMaker"
+    mc:Ignorable="d"
+    Title="設定" Height="349" Width="568">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="49*"/>
+            <ColumnDefinition Width="451*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="saveButton" Content="儲存" HorizontalAlignment="Left" Margin="317,253,0,0" VerticalAlignment="Top" Height="36" Width="84" FontSize="16" Click="saveButton_Click" Grid.Column="1"/>
+        <Button x:Name="closeButton" Content="關閉" HorizontalAlignment="Left" Margin="408,253,0,0" VerticalAlignment="Top" Height="36" Width="84" FontSize="16" Click="closeButton_Click" Grid.Column="1"/>
+        <TextBox x:Name="staffNameTBox" HorizontalAlignment="Left" Margin="44,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"  Grid.Column="1"/>
+        <Label Content="員工姓名" HorizontalAlignment="Left" Margin="24,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+        <ComboBox x:Name="departmentCbox" HorizontalAlignment="Left" Margin="44,57,0,0" VerticalAlignment="Top" Width="120" Grid.Column="1">
+            <ComboBoxItem Content="RD"/>
+            <ComboBoxItem Content="SD"/>
+        </ComboBox>
+        <Label Content="部門" HorizontalAlignment="Left" Margin="24,54,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="58"/>
+        <Label Content="日報表原檔" HorizontalAlignment="Left" Margin="24,107,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="58"/>
+        <TextBox x:Name="dailyReportTbox" Grid.Column="1" HorizontalAlignment="Left" Margin="44,106,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="392"/>
+        <Label Content="周報表原檔" HorizontalAlignment="Left" Margin="24,156,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="58"/>
+        <TextBox x:Name="weeklyReportTbox" Grid.Column="1" HorizontalAlignment="Left" Margin="44,155,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="392"/>
+        <Label Content="工時表原檔" HorizontalAlignment="Left" Margin="24,206,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="58"/>
+        <TextBox x:Name="workHourReportTbox" Grid.Column="1" HorizontalAlignment="Left" Margin="44,205,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="392"/>
+        <Button x:Name="dailyReportButton" Grid.Column="1" Content="選取" HorizontalAlignment="Left" Margin="460,107,0,0" VerticalAlignment="Top" Click="dailyReportButton_Click"/>
+        <Button x:Name="weeklyReportButton" Grid.Column="1" Content="選取" HorizontalAlignment="Left" Margin="460,154,0,0" VerticalAlignment="Top" Click="weeklyReportButton_Click"/>
+        <Button x:Name="workHourReportButton" Grid.Column="1" Content="選取" HorizontalAlignment="Left" Margin="460,206,0,0" VerticalAlignment="Top" Click="workHourReportButton_Click"/>
+    </Grid>
+</Window>

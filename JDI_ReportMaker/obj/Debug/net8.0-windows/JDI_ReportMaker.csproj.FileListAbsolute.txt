@@ -21,12 +21,10 @@ D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\bin\Debug\net8.0-windows\de\M
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\JDI_ReportMaker.csproj.AssemblyReference.cache
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\MainWindow.baml
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\MainWindow.g.cs
-D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\PopupWindow.g.cs
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\App.g.cs
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\JDI_ReportMaker_MarkupCompile.cache
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\JDI_ReportMaker_MarkupCompile.lref
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\App.baml
-D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\PopupWindow.baml
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\JDI_ReportMaker.g.resources
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\JDI_ReportMaker.GeneratedMSBuildEditorConfig.editorconfig
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\JDI_ReportMaker.AssemblyInfoInputs.cache
@@ -39,3 +37,6 @@ D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\refi
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\JDI_ReportMaker.pdb
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\JDI_ReportMaker.genruntimeconfig.cache
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\ref\JDI_ReportMaker.dll
+D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\bin\Debug\net8.0-windows\JDI_ReportMaker.dll.config
+D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\SettingWindow.g.cs
+D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\SettingWindow.baml
