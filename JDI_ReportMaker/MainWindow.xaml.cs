@@ -18,6 +18,8 @@ using NPOI.XSSF.Streaming.Properties;
 using NPOI.Util.Collections;
 using JDI_ReportMaker.ExcelWriter;
 using JDI_ReportMaker.Util;
+using NPOI.Util;
+using JDI_ReportMaker.Util.PanelComponent;
 
 namespace JDI_ReportMaker
 {
@@ -27,6 +29,7 @@ namespace JDI_ReportMaker
     public partial class MainWindow : MetroWindow
     {
         private SourceController? sourceController;
+        private List<TodayReportPanel>? colums;
 
         public MainWindow()
         {
@@ -40,6 +43,9 @@ namespace JDI_ReportMaker
         {
             savePathTextBox.Text = defaultSetting.Default.target_path_d;
             sourceController = new SourceController();
+            colums = new List<TodayReportPanel>();
+            AddPanel();
+            ShowPanel();
         }
 
         private void SaveFileButton_Click(object sender, RoutedEventArgs e)
@@ -49,7 +55,7 @@ namespace JDI_ReportMaker
             defaultSetting.Default.Save();
             defaultSetting.Default.date=datePicker.Text.Length>0?
                 datePicker.SelectedDate?.ToString("yyyy-MM-dd"): DateTime.Now.ToString("yyyy-MM-dd");
-            if (godModeCheckBox.IsChecked == true||(sourceController!=null && sourceController.SourceCheck()))
+            if (sourceController != null && (godModeCheckBox.IsChecked == true|| sourceController.SourceCheck()))
             {
                 try
                 {
@@ -91,6 +97,43 @@ namespace JDI_ReportMaker
         private void todayButton_Click(object sender, RoutedEventArgs e)
         {
             datePicker.Text = "";
+        }
+        /// <summary>
+        /// 重整畫面將欄位顯示於畫面上
+        /// </summary>
+        public void ShowPanel()
+        {
+            dynamicPanel.Children.Clear();
+            if (colums != null)
+                for (int i = 0; i < colums.Count; i++)
+                {
+                    colums[i].SetPanelNum(i + 1);
+                    dynamicPanel.Children.Add(colums[i].GetPanel());
+                }
+        }
+        /// <summary>
+        /// 新增欄位
+        /// </summary>
+        internal void AddPanel()
+        {
+            if(colums != null && colums.Count < 7)
+            {
+                TodayReportPanel panel = new TodayReportPanel(this);
+                colums.Add(panel);
+                ShowPanel();
+            }
+        }
+        /// <summary>
+        /// 刪除欄位
+        /// </summary>
+        /// <param name="target">要刪除的欄位，由欄位本身回傳</param>
+        internal void RemovePanel(TodayReportPanel target)
+        {
+            if(colums!=null && colums.Count > 1)
+            {
+                colums.Remove(target);
+                ShowPanel();
+            }
         }
     }
 }
