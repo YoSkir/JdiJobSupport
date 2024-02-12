@@ -1,4 +1,6 @@
 ﻿using JDI_ReportMaker.ExcelWriter;
+using JDI_ReportMaker.Util.ExcelWriter;
+using JDI_ReportMaker.Util.PanelComponent;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using System;
@@ -24,9 +26,12 @@ namespace JDI_ReportMaker.Util
         /// <returns></returns>
         public bool SourceCheck()
         {
-            return inputCheck() && FileCheck();
+            try
+            {
+                return inputCheck() && FileCheck();
+            }catch(Exception e) { MessageBox.Show(e.Message); return false; }
         }
-        public void ExcecuteFile()
+        public void ExcecuteFile(List<TodayReportPanel> panels)
         {
             FileNameEnum targetType = FileNameEnum.日報表;
             try
@@ -34,6 +39,7 @@ namespace JDI_ReportMaker.Util
                 IWorkbook target= staffDataWrite(targetType);
                 if(target != null )
                 {
+                    dailyReportWrite(target, panels);
                     saveFile(target, targetType);
                 }
 
@@ -96,6 +102,11 @@ namespace JDI_ReportMaker.Util
                 defaultSetting.Default.date.Length > 0 &&
                 defaultSetting.Default.target_path_d.Length > 0;
         }
+        private void dailyReportWrite(IWorkbook target,List<TodayReportPanel> panels)
+        {
+            DailyReportWriter dailyReportWriter = new DailyReportWriter();
+            dailyReportWriter.WritePanel(panels, target);
+        }
         /// <summary>
         /// 將員工姓名、日期寫入
         /// </summary>
@@ -108,13 +119,13 @@ namespace JDI_ReportMaker.Util
             {
                 case FileNameEnum.日報表:
                     target = loadFile(defaultSetting.Default.source_path_d);
-                    settingWritter = new DailyWeeklyExcelWirter();
+                    settingWritter = new DailyWeeklySettingWirter();
                     cellPath[0] = [0, 5, 0];//姓名
                     cellPath[1] = [0, 5, 3];//部門
                     cellPath[2] = [0, 5, 7]; break; //日期
                 case FileNameEnum.周報表:
                     target = loadFile(defaultSetting.Default.source_path_w);
-                    settingWritter = new DailyWeeklyExcelWirter();
+                    settingWritter = new DailyWeeklySettingWirter();
                     cellPath[0] = [0, 5, 0];//姓名
                     cellPath[1] = [0, 5, 4];//部門 
                     cellPath[2] = [0, 5, 7]; break;//日期
@@ -151,12 +162,13 @@ namespace JDI_ReportMaker.Util
                 {
                     sourceWorkbook = new HSSFWorkbook(file);
                 }
+                return sourceWorkbook;
             }
-            catch
+            catch(Exception e)
             {
-                throw;
+                MessageBox.Show(e.Message);
+                return null;
             }
-            return sourceWorkbook;
         }
         /// <summary>
         /// 另存xls檔
@@ -183,6 +195,32 @@ namespace JDI_ReportMaker.Util
                 throw;
             }
         }
-
+        /// <summary>
+        /// 獲取工時表的專案清單
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string,string> GetJobProjectMap()
+        {
+            Dictionary<string,string> jobProjects = new Dictionary<string,string>();
+            //讀取工時表的專案
+            IWorkbook workHourWorkbook = loadFile(defaultSetting.Default.source_path_h);
+            //找到報價單號分頁
+            if (workHourWorkbook == null)
+            {
+                return jobProjects;
+            }
+            ISheet workHourSheet = workHourWorkbook.GetSheet("報價單號-專案名稱(未完成)");
+            if (workHourSheet == null) workHourSheet = workHourWorkbook.GetSheetAt(1);
+            for(int i = 2;i<workHourSheet.LastRowNum;i++)
+            {
+                IRow workHourRow=workHourSheet.GetRow(i);
+                if (workHourRow.GetCell(1).ToString().Length > 0)
+                {
+                    jobProjects.Add(workHourRow.GetCell(0).ToString(), workHourRow.GetCell(1).ToString());
+                }
+                else { break; }
+            }
+            return jobProjects;
+        }
     }
 }

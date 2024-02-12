@@ -60,7 +60,7 @@ namespace JDI_ReportMaker
                 try
                 {
                     //做報表種類判斷
-                    sourceController.ExcecuteFile();
+                    sourceController.ExcecuteFile(colums);
                     resultLabel.Content = "儲存成功";
                     logLabel.Content = "";
                 }catch (Exception ex)
@@ -103,12 +103,12 @@ namespace JDI_ReportMaker
         /// </summary>
         public void ShowPanel()
         {
-            dynamicPanel.Children.Clear();
+            todayJobPanel.Children.Clear();
             if (colums != null)
                 for (int i = 0; i < colums.Count; i++)
                 {
                     colums[i].SetPanelNum(i + 1);
-                    dynamicPanel.Children.Add(colums[i].GetPanel());
+                    todayJobPanel.Children.Add(colums[i].GetPanel());
                 }
         }
         /// <summary>
