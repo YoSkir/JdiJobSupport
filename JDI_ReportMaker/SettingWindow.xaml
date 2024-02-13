@@ -20,11 +20,11 @@
             <ComboBoxItem Content="SD"/>
         </ComboBox>
         <Label Content="部門" HorizontalAlignment="Left" Margin="24,54,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="58"/>
-        <Label Content="日報表原檔" HorizontalAlignment="Left" Margin="24,107,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="58"/>
+        <Label Content="日報表原檔" HorizontalAlignment="Left" Margin="10,107,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="72"/>
         <TextBox x:Name="dailyReportTbox" Grid.Column="1" HorizontalAlignment="Left" Margin="44,106,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="392"/>
-        <Label Content="周報表原檔" HorizontalAlignment="Left" Margin="24,156,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="58"/>
+        <Label Content="周報表原檔" HorizontalAlignment="Left" Margin="10,156,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="72"/>
         <TextBox x:Name="weeklyReportTbox" Grid.Column="1" HorizontalAlignment="Left" Margin="44,155,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="392"/>
-        <Label Content="工時表原檔" HorizontalAlignment="Left" Margin="24,206,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="58"/>
+        <Label Content="工時表原檔" HorizontalAlignment="Left" Margin="10,206,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="72"/>
         <TextBox x:Name="workHourReportTbox" Grid.Column="1" HorizontalAlignment="Left" Margin="44,205,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="392"/>
         <Button x:Name="dailyReportButton" Grid.Column="1" Content="選取" HorizontalAlignment="Left" Margin="460,107,0,0" VerticalAlignment="Top" Click="dailyReportButton_Click"/>
         <Button x:Name="weeklyReportButton" Grid.Column="1" Content="選取" HorizontalAlignment="Left" Margin="460,154,0,0" VerticalAlignment="Top" Click="weeklyReportButton_Click"/>

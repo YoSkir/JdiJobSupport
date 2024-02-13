@@ -39,18 +39,22 @@ namespace JDI_ReportMaker.Util.PanelComponent
             {
                 return thisPanel;
             }
-            return new StackPanel();
+            return CreatePanel();
         }
         /// <summary>
         /// 創建一個於視窗上顯示輸入的面板欄位
         /// </summary>
-        public override void CreatePanel()
+        public override StackPanel CreatePanel()
         {
-            thisPanel = new StackPanel
+            if(thisPanel == null)
             {
-                Orientation = Orientation.Horizontal,
-                Margin = new Thickness(0, 10, 0, 0)
-            };
+                thisPanel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Margin = new Thickness(0, 10, 0, 0)
+                };
+            }
+
             numLabel = new Label();
             comboBox = new ComboBox { Margin = new Thickness(10, 0, 0, 0), Width = 281, Height = 32 };
             projectTitle = new TextBox { Margin = new Thickness(10, 0, 0, 0), Width = 386, Height = 32, FontSize = 20 };
@@ -75,6 +79,7 @@ namespace JDI_ReportMaker.Util.PanelComponent
             thisPanel.Children.Add(addBtn);
             removeBtn.Click += RemoveButton_Clicked;
             thisPanel.Children.Add(removeBtn);
+            return thisPanel;
         }
 
         /// <summary>
@@ -97,63 +102,9 @@ namespace JDI_ReportMaker.Util.PanelComponent
             projectTitle.Text = comboBox.Text;
             projectTitle.Background = new SolidColorBrush(Colors.Transparent);
         }
-
-        /// <summary>
-        /// 設定輸入格的提示
-        /// </summary>
-        /// <param name="inputTip"></param>
-        /// <param name="target"></param>
-        private void SetInputTip(string inputTip, TextBox target)
-        {
-            //創建VisualBrush作為TextBox的背景
-            VisualBrush brush = new VisualBrush();
-            TextBlock textBlock = new TextBlock
-            {
-                Text = inputTip,
-                Foreground = new SolidColorBrush(Colors.Gray),
-                FontSize = 15,
-                FontStyle = FontStyles.Italic
-            };
-            brush.Visual = textBlock;
-            brush.Stretch = Stretch.None;
-            Style style = new Style(typeof(TextBox));
-            //當文本為空時顯示佔位符
-            style.Triggers.Add(new Trigger
-            {
-                Property = TextBox.TextProperty,
-                Value = "",
-                Setters = { new Setter(TextBox.BackgroundProperty, brush) }
-            });
-            //當TextBox獲得焦點時，清除背景
-            style.Triggers.Add(new Trigger
-            {
-                Property = UIElement.IsFocusedProperty,
-                Value = true,
-                Setters = { new Setter(TextBox.BackgroundProperty, new SolidColorBrush(Colors.Transparent)) }
-            });
-            //設置文本為空時背景顯示佔位符
-            target.Background = brush;
-            //當文本失去焦點且文本為空時顯示佔位符
-            target.LostFocus += (sender, e) =>
-            {
-                TextBox? textbox = sender as TextBox;
-                if (textbox != null && string.IsNullOrEmpty(textbox.Text))
-                {
-                    textbox.Background = brush;
-                }
-            };
-            //當文本框獲得焦點時，清除背景使其透明
-            target.GotFocus += (sender, e) =>
-            {
-                TextBox? textBox = sender as TextBox;
-                textBox.Background = new SolidColorBrush(Colors.Transparent);
-            };
-            target.Style = style;
-        }
-
         private void AddButton_Clicked(object sender, RoutedEventArgs e)
         {
-            parentWindow.AddPanel();
+            parentWindow.AddTodayPanel();
         }
         private void RemoveButton_Clicked(object sender, RoutedEventArgs e)
         {
@@ -164,6 +115,14 @@ namespace JDI_ReportMaker.Util.PanelComponent
         public string GetTitle() { return projectTitle.Text; }
         public string GetComboBox() { return comboBox.Text; }
         public string GetDescribtion() { return projectDescription.Text; }
+        public string GetWorkHour()
+        {
+            if(hourSpent.Text.Length == 0)
+            {
+                return "0";
+            }
+            return hourSpent.Text;
+        }
         public bool GetDone() { return doneCheck.IsChecked == true; }
     }
 }

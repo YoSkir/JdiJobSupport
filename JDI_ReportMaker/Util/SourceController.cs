@@ -31,7 +31,7 @@ namespace JDI_ReportMaker.Util
                 return inputCheck() && FileCheck();
             }catch(Exception e) { MessageBox.Show(e.Message); return false; }
         }
-        public void ExcecuteFile(List<TodayReportPanel> panels)
+        public void ExcecuteFile(List<TodayReportPanel> panels,List<TomorrowReportPanel> tomorrowPanels)
         {
             FileNameEnum targetType = FileNameEnum.日報表;
             try
@@ -39,7 +39,7 @@ namespace JDI_ReportMaker.Util
                 IWorkbook target= staffDataWrite(targetType);
                 if(target != null )
                 {
-                    dailyReportWrite(target, panels);
+                    dailyReportWrite(target, panels,tomorrowPanels);
                     saveFile(target, targetType);
                 }
 
@@ -102,10 +102,82 @@ namespace JDI_ReportMaker.Util
                 defaultSetting.Default.date.Length > 0 &&
                 defaultSetting.Default.target_path_d.Length > 0;
         }
-        private void dailyReportWrite(IWorkbook target,List<TodayReportPanel> panels)
+        /// <summary>
+        /// 檢查並寫入日報表的內容
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="panels"></param>
+        /// <param name="tomorrowPanels"></param>
+        private void dailyReportWrite(IWorkbook target,List<TodayReportPanel> panels,List<TomorrowReportPanel> tomorrowPanels)
         {
             DailyReportWriter dailyReportWriter = new DailyReportWriter();
-            dailyReportWriter.WritePanel(panels, target);
+            dailyReportWriter.WriteTodayPanel(panels, target);
+            dailyReportWriter.WriteTomorrowPanel(tomorrowPanels, target);
+        }
+        public bool CheckPanelInput(List<TodayReportPanel> panels)
+        {
+            //檢查日工時 報表內容
+            int totalWorkHourToday = 0;
+            string problemList="";
+            foreach(TodayReportPanel panel in panels)
+            {
+                string index=panel.GetPanelNum();
+                if (panel.GetComboBox() == "工時表統計用")
+                {
+                    problemList += $"第{index}欄尚未選擇專案項目\n";
+                }
+                if (panel.GetTitle().Length == 0)
+                {
+                    problemList += $"第{index}欄未輸入大項列表\n";
+                }
+                if (panel.GetDescribtion().Length == 0)
+                {
+                    problemList += $"第{index}欄未輸入細項說明\n";
+                }
+                if (panel.GetWorkHour().Equals("0"))
+                {
+                    problemList += $"第{index}欄未輸入工時\n";
+                }
+                totalWorkHourToday +=int.Parse(panel.GetWorkHour());
+            }
+            //工時總結異常時
+            if(totalWorkHourToday !=8)
+            {
+                problemList += "工時加總不是8小時\n";
+            }
+            return WarningBox(problemList);
+        }
+        public bool CheckPanelInput(List<TomorrowReportPanel> panels)
+        {
+            string problemList = "";
+            foreach (TomorrowReportPanel panel in panels)
+            {
+                string index = panel.GetPanelNum();
+
+                if (panel.GetTitle().Length == 0)
+                {
+                    problemList += $"第{index}欄明日預計尚未輸入大項列表\n";
+                }
+                if (panel.GetDescribtion().Length == 0)
+                {
+                    problemList += $"第{index}欄明日預計尚未輸入細項\n";
+                }
+            }
+            return WarningBox(problemList);
+        }
+        /// <summary>
+        /// 可自定義文字的警告視窗
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private bool WarningBox(string message)
+        {
+            MessageBoxResult result=MessageBox.Show("問題列表:\n"+message+"\n 是否繼續執行?","警告",MessageBoxButton.YesNo,MessageBoxImage.Warning);
+            if(result == MessageBoxResult.Yes)
+            {
+                return true;
+            }
+            return false;
         }
         /// <summary>
         /// 將員工姓名、日期寫入

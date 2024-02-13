@@ -29,7 +29,8 @@ namespace JDI_ReportMaker
     public partial class MainWindow : MetroWindow
     {
         private SourceController? sourceController;
-        private List<TodayReportPanel>? colums;
+        private List<TodayReportPanel>? todayPanels;
+        private List<TomorrowReportPanel>? tomorrowPanels;
 
         public MainWindow()
         {
@@ -43,8 +44,10 @@ namespace JDI_ReportMaker
         {
             savePathTextBox.Text = defaultSetting.Default.target_path_d;
             sourceController = new SourceController();
-            colums = new List<TodayReportPanel>();
-            AddPanel();
+            todayPanels = new List<TodayReportPanel>();
+            tomorrowPanels = new List<TomorrowReportPanel>();
+            AddTodayPanel();
+            AddTomorrowPanel();
             ShowPanel();
         }
 
@@ -55,18 +58,16 @@ namespace JDI_ReportMaker
             defaultSetting.Default.Save();
             defaultSetting.Default.date=datePicker.Text.Length>0?
                 datePicker.SelectedDate?.ToString("yyyy-MM-dd"): DateTime.Now.ToString("yyyy-MM-dd");
-            if (sourceController != null && (godModeCheckBox.IsChecked == true|| sourceController.SourceCheck()))
+            bool inputOK = false;
+            if(sourceController==null)sourceController = new SourceController();
+            if (godModeCheckBox.IsChecked == true|| sourceController.SourceCheck())
             {
-                try
+                inputOK = sourceController.CheckPanelInput(todayPanels);
+                if(inputOK)
+                inputOK = sourceController.CheckPanelInput(tomorrowPanels);
+                if (inputOK)
                 {
-                    //做報表種類判斷
-                    sourceController.ExcecuteFile(colums);
-                    resultLabel.Content = "儲存成功";
-                    logLabel.Content = "";
-                }catch (Exception ex)
-                {
-                    resultLabel.Content = "儲存失敗";
-                    logLabel.Content = ex.Message;
+                    WriteExcelFile();
                 }
             }
             else
@@ -74,6 +75,24 @@ namespace JDI_ReportMaker
                 logLabel.Content = "請確認檔案路徑、員工資料、檔案是否正常";
             }
         }
+
+        private void WriteExcelFile()
+        {
+            if(sourceController==null)sourceController = new SourceController();
+            try
+            {
+                //做報表種類判斷
+                sourceController.ExcecuteFile(todayPanels, tomorrowPanels);
+                resultLabel.Content = "儲存成功";
+                logLabel.Content = "";
+            }
+            catch (Exception ex)
+            {
+                resultLabel.Content = "儲存失敗";
+                logLabel.Content = ex.Message;
+            }
+        }
+
         private void settingWindowButton_Click(object sender, RoutedEventArgs e)
         {
             SettingWindow settingWindow = new SettingWindow();
@@ -104,22 +123,40 @@ namespace JDI_ReportMaker
         public void ShowPanel()
         {
             todayJobPanel.Children.Clear();
-            if (colums != null)
-                for (int i = 0; i < colums.Count; i++)
-                {
-                    colums[i].SetPanelNum(i + 1);
-                    todayJobPanel.Children.Add(colums[i].GetPanel());
-                }
+            tomorrowPanelContainer.Children.Clear();
+            if (todayPanels == null)
+                todayPanels = new List<TodayReportPanel>();
+            for (int i = 0; i < todayPanels.Count; i++)
+            {
+                todayPanels[i].SetPanelNum(i + 1);
+                todayJobPanel.Children.Add(todayPanels[i].GetPanel());
+            }
+            if (tomorrowPanels == null)
+                tomorrowPanels = new List<TomorrowReportPanel>();
+            for (int i = 0; i < tomorrowPanels.Count; i++)
+            {
+                tomorrowPanels[i].SetPanelNum(i + 1);
+                tomorrowPanelContainer.Children.Add(tomorrowPanels[i].GetPanel());
+            }
         }
         /// <summary>
         /// 新增欄位
         /// </summary>
-        internal void AddPanel()
+        internal void AddTodayPanel()
         {
-            if(colums != null && colums.Count < 7)
+            if(todayPanels != null && todayPanels.Count < 7)
             {
                 TodayReportPanel panel = new TodayReportPanel(this);
-                colums.Add(panel);
+                todayPanels.Add(panel);
+                ShowPanel();
+            }
+        }
+        internal void AddTomorrowPanel()
+        {
+            if(tomorrowPanels != null&&tomorrowPanels.Count < 5)
+            {
+                TomorrowReportPanel panel = new TomorrowReportPanel(this);
+                tomorrowPanels.Add(panel);
                 ShowPanel();
             }
         }
@@ -129,9 +166,17 @@ namespace JDI_ReportMaker
         /// <param name="target">要刪除的欄位，由欄位本身回傳</param>
         internal void RemovePanel(TodayReportPanel target)
         {
-            if(colums!=null && colums.Count > 1)
+            if(todayPanels!=null && todayPanels.Count > 1)
             {
-                colums.Remove(target);
+                todayPanels.Remove(target);
+                ShowPanel();
+            }
+        }
+        internal void RemovePanel(TomorrowReportPanel target)
+        {
+            if (tomorrowPanels != null && tomorrowPanels.Count > 1)
+            {
+                tomorrowPanels.Remove(target);
                 ShowPanel();
             }
         }
