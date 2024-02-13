@@ -94,13 +94,15 @@ namespace JDI_ReportMaker.Util
         /// <returns></returns>
         private bool inputCheck()
         {
-            return defaultSetting.Default.staff_name.Length > 0 &&
+            bool settingCheck = defaultSetting.Default.staff_name.Length > 0 &&
                 defaultSetting.Default.department.Length > 0 &&
                 defaultSetting.Default.source_path_d.Length > 0 &&
                 defaultSetting.Default.source_path_w.Length > 0 &&
-                defaultSetting.Default.source_path_h.Length > 0 &&
-                defaultSetting.Default.date.Length > 0 &&
-                defaultSetting.Default.target_path_d.Length > 0;
+                defaultSetting.Default.source_path_h.Length > 0;
+            if (settingCheck) { return true; }
+            else {
+                MessageBox.Show("請確認資料");
+                return false; }
         }
         /// <summary>
         /// 檢查並寫入日報表的內容
@@ -238,7 +240,7 @@ namespace JDI_ReportMaker.Util
             }
             catch(Exception e)
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show("檔案路徑異常"+e.Message);
                 return null;
             }
         }

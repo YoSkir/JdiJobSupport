@@ -42,13 +42,39 @@ namespace JDI_ReportMaker
         /// </summary>
         private void initialData()
         {
-            savePathTextBox.Text = defaultSetting.Default.target_path_d;
+            savePathTextBox.Text =defaultSetting.Default.target_path_d;
             sourceController = new SourceController();
-            todayPanels = new List<TodayReportPanel>();
-            tomorrowPanels = new List<TomorrowReportPanel>();
-            AddTodayPanel();
-            AddTomorrowPanel();
-            ShowPanel();
+            if (!sourceController.SourceCheck())
+            {
+                OpenSettingWindow();
+            }
+            else
+            {
+                InitialPanel();
+            }
+        }
+
+        private void InitialPanel()
+        {
+            if (todayPanels == null)
+            {
+                todayPanels = new List<TodayReportPanel>();
+                AddTodayPanel();
+            }
+            if (tomorrowPanels == null)
+            {
+                tomorrowPanels = new List<TomorrowReportPanel>();
+                AddTomorrowPanel();
+            }
+            if (todayPanels.Count == 0)
+            {
+                AddTodayPanel();
+            }
+            if (tomorrowPanels.Count == 0)
+            {
+                AddTomorrowPanel();
+            }
+            Show();
         }
 
         private void SaveFileButton_Click(object sender, RoutedEventArgs e)
@@ -60,7 +86,7 @@ namespace JDI_ReportMaker
                 datePicker.SelectedDate?.ToString("yyyy-MM-dd"): DateTime.Now.ToString("yyyy-MM-dd");
             bool inputOK = false;
             if(sourceController==null)sourceController = new SourceController();
-            if (godModeCheckBox.IsChecked == true|| sourceController.SourceCheck())
+            if (godModeCheckBox.IsChecked == true|| sourceController.SourceCheck()&&savePathTextBox.Text.Length>0)
             {
                 inputOK = sourceController.CheckPanelInput(todayPanels);
                 if(inputOK)
@@ -95,8 +121,14 @@ namespace JDI_ReportMaker
 
         private void settingWindowButton_Click(object sender, RoutedEventArgs e)
         {
+            OpenSettingWindow();
+        }
+
+        private void OpenSettingWindow()
+        {
             SettingWindow settingWindow = new SettingWindow();
-            settingWindow.Owner = this;
+            settingWindow.Closing += SettingWindow_Closing;
+            //settingWindow.Owner = this;
             settingWindow.ShowDialog();
         }
 
@@ -179,6 +211,34 @@ namespace JDI_ReportMaker
                 tomorrowPanels.Remove(target);
                 ShowPanel();
             }
+        }
+
+        private void cleanDefaultButton_Click(object sender, RoutedEventArgs e)
+        {
+            defaultSetting.Default.Reset();
+            savePathTextBox.Text = defaultSetting.Default.target_path_d;
+        }
+        /// <summary>
+        /// 設定未完成時無法關閉設定視窗
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SettingWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(sourceController==null)sourceController=new SourceController();
+            if (!sourceController.SourceCheck())
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                InitialPanel();
+            }
+        }
+
+        private void resetPanel_Click(object sender, RoutedEventArgs e)
+        {
+            InitialPanel();
         }
     }
 }

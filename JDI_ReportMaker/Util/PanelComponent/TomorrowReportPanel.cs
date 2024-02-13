@@ -33,17 +33,20 @@ namespace JDI_ReportMaker.Util.PanelComponent
                     Margin = new Thickness(0, 10, 0, 0)
                 };
             }
-
+            //設定面板元件
             numLabel = new Label();
             projectTitle = new TextBox { Margin = new Thickness(10, 0, 0, 0), Width = 386, Height = 32, FontSize = 20 };
             projectDescription = new TextBox { Margin = new Thickness(10, 0, 0, 0), Width = 386, Height = 32, FontSize = 20 };
             addBtn = new Button { Margin = new Thickness(50, 0, 0, 0), Content = "+" };
             removeBtn = new Button { Margin = new Thickness(10, 0, 0, 0), Content = "-" };
+            //面板
             thisPanel.Children.Add(numLabel);
+            //輸入項
             SetInputTip("請輸入大項列表", projectTitle);
             thisPanel.Children.Add(projectTitle);
             SetInputTip("請輸入預計情況", projectDescription);
             thisPanel.Children.Add(projectDescription);
+            //增減按鈕
             addBtn.Click += AddButton_Clicked;
             thisPanel.Children.Add(addBtn);
             removeBtn.Click += RemoveButton_Clicked;

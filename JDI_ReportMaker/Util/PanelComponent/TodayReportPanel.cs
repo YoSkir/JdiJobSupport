@@ -26,8 +26,7 @@ namespace JDI_ReportMaker.Util.PanelComponent
         public TodayReportPanel(MainWindow mainWindow)
         {
             //設定專案清單
-            SourceController sourceController = new SourceController();
-            projects = sourceController.GetJobProjectMap();
+            SetJobProjectList();
             //創造面板
             CreatePanel();
             //連接主畫面
@@ -54,7 +53,7 @@ namespace JDI_ReportMaker.Util.PanelComponent
                     Margin = new Thickness(0, 10, 0, 0)
                 };
             }
-
+            //設定面板的原件
             numLabel = new Label();
             comboBox = new ComboBox { Margin = new Thickness(10, 0, 0, 0), Width = 281, Height = 32 };
             projectTitle = new TextBox { Margin = new Thickness(10, 0, 0, 0), Width = 386, Height = 32, FontSize = 20 };
@@ -63,11 +62,18 @@ namespace JDI_ReportMaker.Util.PanelComponent
             doneCheck = new CheckBox { Margin = new Thickness(20, 0, 0, 0), Height = 32, Content = "已完成" };
             addBtn = new Button { Margin = new Thickness(50, 0, 0, 0), Content = "+" };
             removeBtn = new Button { Margin = new Thickness(10, 0, 0, 0), Content = "-" };
+            //面板
             thisPanel.Children.Add(numLabel);
+            //工作專案下拉選單
+            if (projects == null)
+            {
+                SetJobProjectList();
+            }
             comboBox.ItemsSource = projects.Values;
             comboBox.IsEditable = true;
             comboBox.Text = "工時表統計用";
             thisPanel.Children.Add(comboBox);
+            //大項列表、備註、工時、完成選格
             SetInputTip("請輸入大項列表", projectTitle);
             thisPanel.Children.Add(projectTitle);
             SetInputTip("請輸入備註", projectDescription);
@@ -75,13 +81,22 @@ namespace JDI_ReportMaker.Util.PanelComponent
             SetInputTip("工時", hourSpent);
             thisPanel.Children.Add(hourSpent);
             thisPanel.Children.Add(doneCheck);
+            //面板增減按鈕
             addBtn.Click += AddButton_Clicked;
             thisPanel.Children.Add(addBtn);
             removeBtn.Click += RemoveButton_Clicked;
             thisPanel.Children.Add(removeBtn);
             return thisPanel;
         }
-
+        private void SetJobProjectList()
+        {
+            try
+            {
+                SourceController sourceController = new SourceController();
+                projects = sourceController.GetJobProjectMap();
+            }
+            catch (Exception ex) { MessageBox.Show("專案列表載入失敗，請確認工時表是否正常"); }
+        }
         /// <summary>
         /// 設定這個欄位的編號，由主視窗顯示時一併設定
         /// </summary>
