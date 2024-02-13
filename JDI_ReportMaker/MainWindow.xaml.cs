@@ -31,6 +31,7 @@ namespace JDI_ReportMaker
         private SourceController? sourceController;
         private List<TodayReportPanel>? todayPanels;
         private List<TomorrowReportPanel>? tomorrowPanels;
+        private WeeklyReportPage? weeklyReportPage;
 
         public MainWindow()
         {
@@ -42,7 +43,6 @@ namespace JDI_ReportMaker
         /// </summary>
         private void initialData()
         {
-            savePathTextBox.Text =defaultSetting.Default.target_path_d;
             sourceController = new SourceController();
             if (!sourceController.SourceCheck())
             {
@@ -52,6 +52,7 @@ namespace JDI_ReportMaker
             {
                 InitialPanel();
             }
+            weeklyReportPage = new WeeklyReportPage();
         }
 
         private void InitialPanel()
@@ -80,13 +81,11 @@ namespace JDI_ReportMaker
         private void SaveFileButton_Click(object sender, RoutedEventArgs e)
         {
             resultLabel.Content = "";
-            defaultSetting.Default.target_path_d = savePathTextBox.Text;
-            defaultSetting.Default.Save();
             defaultSetting.Default.date=datePicker.Text.Length>0?
                 datePicker.SelectedDate?.ToString("yyyy-MM-dd"): DateTime.Now.ToString("yyyy-MM-dd");
             bool inputOK = false;
             if(sourceController==null)sourceController = new SourceController();
-            if (godModeCheckBox.IsChecked == true|| sourceController.SourceCheck()&&savePathTextBox.Text.Length>0)
+            if (godModeCheckBox.IsChecked == true|| sourceController.SourceCheck())
             {
                 inputOK = sourceController.CheckPanelInput(todayPanels);
                 if(inputOK)
@@ -130,19 +129,6 @@ namespace JDI_ReportMaker
             settingWindow.Closing += SettingWindow_Closing;
             //settingWindow.Owner = this;
             settingWindow.ShowDialog();
-        }
-
-        private void selectLocateButton_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFolderDialog openFolderDialog = new OpenFolderDialog() {
-                Title = "請選擇目標位置",
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                Multiselect = false
-            } ;
-            if (openFolderDialog.ShowDialog() == true)
-            {
-                savePathTextBox.Text = openFolderDialog.FolderName;
-            }
         }
 
         private void todayButton_Click(object sender, RoutedEventArgs e)
@@ -216,7 +202,6 @@ namespace JDI_ReportMaker
         private void cleanDefaultButton_Click(object sender, RoutedEventArgs e)
         {
             defaultSetting.Default.Reset();
-            savePathTextBox.Text = defaultSetting.Default.target_path_d;
         }
         /// <summary>
         /// 設定未完成時無法關閉設定視窗
@@ -239,6 +224,12 @@ namespace JDI_ReportMaker
         private void resetPanel_Click(object sender, RoutedEventArgs e)
         {
             InitialPanel();
+        }
+
+        private void weeklyReportSheet_Click(object sender, RoutedEventArgs e)
+        {
+            if (weeklyReportPage == null) weeklyReportPage = new WeeklyReportPage();
+            weeklyReportPage.Show();
         }
     }
 }

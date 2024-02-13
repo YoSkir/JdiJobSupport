@@ -35,6 +35,7 @@ namespace JDI_ReportMaker
             workHourReportTbox.Text=defaultSetting.Default.source_path_h;
             staffNameTBox.Text = defaultSetting.Default.staff_name;
             departmentCbox.Text = defaultSetting.Default.department;
+            savePathTextBox.Text = defaultSetting.Default.target_path_d;
         }
         /// <summary>
         /// 將設定寫入預設
@@ -48,6 +49,7 @@ namespace JDI_ReportMaker
                 defaultSetting.Default.source_path_h = workHourReportTbox.Text;
                 defaultSetting.Default.staff_name = staffNameTBox.Text;
                 defaultSetting.Default.department = departmentCbox.Text;
+                defaultSetting.Default.target_path_d=savePathTextBox.Text;
                 defaultSetting.Default.Save();
             }
             catch (Exception ex)
@@ -97,6 +99,20 @@ namespace JDI_ReportMaker
         private void closeWindow()
         {
             this.Close();
+        }
+
+        private void savePathButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFolderDialog openFolderDialog = new OpenFolderDialog()
+            {
+                Title = "請選擇目標位置",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                Multiselect = false
+            };
+            if (openFolderDialog.ShowDialog() == true)
+            {
+                savePathTextBox.Text = openFolderDialog.FolderName;
+            }
         }
     }
 }

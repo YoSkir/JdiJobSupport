@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\App.xaml
-2-451649182
+3-1487302148
 
-19-1319012565
+20-1986579370
 213-1785193746
-MainWindow.xaml;SettingWindow.xaml;
+MainWindow.xaml;SettingWindow.xaml;WeeklyReportPage.xaml;
 
 True
 

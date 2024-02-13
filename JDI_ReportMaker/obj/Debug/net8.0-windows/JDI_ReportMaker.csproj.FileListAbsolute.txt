@@ -40,3 +40,5 @@ D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\ref\
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\bin\Debug\net8.0-windows\JDI_ReportMaker.dll.config
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\SettingWindow.g.cs
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\SettingWindow.baml
+D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\WeeklyReportPage.g.cs
+D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\WeeklyReportPage.baml
