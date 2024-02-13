@@ -7,25 +7,27 @@
         mc:Ignorable="d"
         Title="週報表" Height="600" Width="800">
     <Grid>
-        <Button Content="儲存週報表" HorizontalAlignment="Left" Margin="693,529,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="saveWeekReportButton" Content="儲存週報表" HorizontalAlignment="Left" Margin="693,529,0,0" VerticalAlignment="Top" Click="saveWeekReportButton_Click"/>
         <TextBox x:Name="titleTbox_mon" HorizontalAlignment="Left" Margin="79,106,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
         <TextBox x:Name="describTbox_mon" HorizontalAlignment="Left" Margin="507,106,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
-        <Label Content="周一" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top"/>
+        <Label Content="周一" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Width="64"/>
         <TextBox x:Name="titleTbox_tue" HorizontalAlignment="Left" Margin="79,168,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
         <TextBox x:Name="describTbox_tue" HorizontalAlignment="Left" Margin="507,168,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
-        <Label Content="周二" HorizontalAlignment="Left" Margin="10,168,0,0" VerticalAlignment="Top"/>
+        <Label Content="周二" HorizontalAlignment="Left" Margin="10,168,0,0" VerticalAlignment="Top" Width="64"/>
         <TextBox x:Name="titleTbox_wed" HorizontalAlignment="Left" Margin="79,237,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
         <TextBox x:Name="describTbox_wed" HorizontalAlignment="Left" Margin="507,237,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
-        <Label Content="周三" HorizontalAlignment="Left" Margin="10,237,0,0" VerticalAlignment="Top"/>
+        <Label Content="周三" HorizontalAlignment="Left" Margin="10,237,0,0" VerticalAlignment="Top" Width="64"/>
         <TextBox x:Name="titleTbox_thu" HorizontalAlignment="Left" Margin="79,303,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
         <TextBox x:Name="describTbox_thu" HorizontalAlignment="Left" Margin="507,303,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
-        <Label Content="周四" HorizontalAlignment="Left" Margin="10,303,0,0" VerticalAlignment="Top"/>
+        <Label Content="周四" HorizontalAlignment="Left" Margin="10,303,0,0" VerticalAlignment="Top" Width="64"/>
         <TextBox x:Name="titleTbox_fri" HorizontalAlignment="Left" Margin="79,376,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
         <TextBox x:Name="describTbox_fri" HorizontalAlignment="Left" Margin="507,376,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
-        <Label Content="周五" HorizontalAlignment="Left" Margin="10,376,0,0" VerticalAlignment="Top"/>
+        <Label Content="周五" HorizontalAlignment="Left" Margin="10,376,0,0" VerticalAlignment="Top" Width="64"/>
         <TextBox x:Name="titleTbox_sat" HorizontalAlignment="Left" Margin="79,442,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
         <TextBox x:Name="describTbox_sat" HorizontalAlignment="Left" Margin="507,442,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
-        <Label Content="周六" HorizontalAlignment="Left" Margin="10,442,0,0" VerticalAlignment="Top"/>
+        <Label Content="周六" HorizontalAlignment="Left" Margin="10,442,0,0" VerticalAlignment="Top" Width="64"/>
+        <ComboBox x:Name="weekCbox" HorizontalAlignment="Left" Margin="79,45,0,0" VerticalAlignment="Top" Width="185"/>
+        <Label Content="期間" HorizontalAlignment="Left" Margin="79,15,0,0" VerticalAlignment="Top" Width="93"/>
 
     </Grid>
 </Window>

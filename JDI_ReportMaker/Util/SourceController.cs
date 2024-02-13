@@ -18,8 +18,8 @@ namespace JDI_ReportMaker.Util
     {
         private readonly Dictionary<string, string> fileName
             = new Dictionary<string, string> { {"日報表", "佳帝科技員工日報表 "},
-                                               {"周報表", "佳帝科技員工周報表 "},
-                                               {"工時表", "佳帝科技員工工時表 "}};
+                                               {"周報表", "週報表 "},
+                                               {"工時表", "工時表 "}};
         /// <summary>
         /// 確認來源檔案、設定是否正常
         /// </summary>
@@ -31,6 +31,11 @@ namespace JDI_ReportMaker.Util
                 return inputCheck() && FileCheck();
             }catch(Exception e) { MessageBox.Show(e.Message); return false; }
         }
+        /// <summary>
+        /// 寫入日報表
+        /// </summary>
+        /// <param name="panels"></param>
+        /// <param name="tomorrowPanels"></param>
         public void ExcecuteFile(List<TodayReportPanel> panels,List<TomorrowReportPanel> tomorrowPanels)
         {
             FileNameEnum targetType = FileNameEnum.日報表;
@@ -45,6 +50,11 @@ namespace JDI_ReportMaker.Util
 
             }
             catch { throw; }
+        }
+
+        public void ExcecuteFile(IWorkbook target)
+        {
+            saveFile(target, FileNameEnum.周報表);
         }
         /// <summary>
         /// 用excel檔案中標題 確認來源檔案是否正常
@@ -185,7 +195,7 @@ namespace JDI_ReportMaker.Util
         /// <summary>
         /// 將員工姓名、日期寫入
         /// </summary>
-        private IWorkbook staffDataWrite(FileNameEnum fileNameEnum)
+        internal IWorkbook staffDataWrite(FileNameEnum fileNameEnum)
         {
             int[][] cellPath = new int[3][];
             ExcelWritter? settingWritter;

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JDI_ReportMaker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+16cf8acf8d51f78157000e0ffcbc60bc7e1e4193")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9af3f855da432ff52461789125d79348266c6938")]
 [assembly: System.Reflection.AssemblyProductAttribute("JDI_ReportMaker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JDI_ReportMaker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
