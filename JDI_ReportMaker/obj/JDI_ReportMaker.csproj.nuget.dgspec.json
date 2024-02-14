@@ -51,6 +51,14 @@
             "NPOI": {
               "target": "Package",
               "version": "[2.6.2, )"
+            },
+            "Stub.System.Data.SQLite.Core.NetStandard": {
+              "target": "Package",
+              "version": "[1.0.118, )"
+            },
+            "System.Data.SQLite": {
+              "target": "Package",
+              "version": "[1.0.118, )"
             }
           },
           "imports": [

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JDI_ReportMaker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1109ec04506ced171d7cbc90045dff1ee085475f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75c55719ea2965daef1ac2c9a12da5b412bfef6e")]
 [assembly: System.Reflection.AssemblyProductAttribute("JDI_ReportMaker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JDI_ReportMaker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

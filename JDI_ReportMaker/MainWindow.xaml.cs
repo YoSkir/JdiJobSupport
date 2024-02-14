@@ -32,6 +32,7 @@ namespace JDI_ReportMaker
         private List<TodayReportPanel>? todayPanels;
         private List<TomorrowReportPanel>? tomorrowPanels;
         private WeeklyReportPage? weeklyReportPage;
+        private DBController? dbController;
 
         public MainWindow()
         {
@@ -54,6 +55,7 @@ namespace JDI_ReportMaker
                 InitialPanel();
             }
             weeklyReportPage = new WeeklyReportPage();
+            dbController = new DBController();
         }
         /// <summary>
         /// 初始化日報表面板
@@ -255,6 +257,10 @@ namespace JDI_ReportMaker
                                           datePicker.SelectedDate?.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
             if (weeklyReportPage == null) weeklyReportPage = new WeeklyReportPage();
             weeklyReportPage.Show();
+        }
+
+        private void workHourSheet_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

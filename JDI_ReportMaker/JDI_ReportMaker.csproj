@@ -11,6 +11,8 @@
   <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.4.10" />
     <PackageReference Include="NPOI" Version="2.6.2" />
+    <PackageReference Include="Stub.System.Data.SQLite.Core.NetStandard" Version="1.0.118" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +27,9 @@
     <None Update="defaultSetting.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>defaultSetting.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="JJSDataBase">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

@@ -13,6 +13,9 @@
     <Compile Update="WeeklyReportPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="WorkHourReportPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MainWindow.xaml">
@@ -22,6 +25,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="WeeklyReportPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="WorkHourReportPage.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
