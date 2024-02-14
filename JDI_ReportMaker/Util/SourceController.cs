@@ -14,12 +14,19 @@ using System.Windows.Controls;
 
 namespace JDI_ReportMaker.Util
 {
+    /// <summary>
+    /// excel操作、設定確認
+    /// </summary>
     class SourceController
     {
+        //用於命名檔案
         private readonly Dictionary<string, string> fileName
             = new Dictionary<string, string> { {"日報表", "佳帝科技員工日報表 "},
-                                               {"周報表", "週報表 "},
+                                               {"週報表", "週報表 "},
                                                {"工時表", "工時表 "}};
+
+
+
         /// <summary>
         /// 確認來源檔案、設定是否正常
         /// </summary>
@@ -32,29 +39,23 @@ namespace JDI_ReportMaker.Util
             }catch(Exception e) { MessageBox.Show(e.Message); return false; }
         }
         /// <summary>
-        /// 寫入日報表
+        /// 確認員工姓名、編號、來源檔案、目的地是否有輸入
         /// </summary>
-        /// <param name="panels"></param>
-        /// <param name="tomorrowPanels"></param>
-        public void ExcecuteFile(List<TodayReportPanel> panels,List<TomorrowReportPanel> tomorrowPanels)
+        /// <returns></returns>
+        private bool inputCheck()
         {
-            FileNameEnum targetType = FileNameEnum.日報表;
-            try
+            bool settingCheck = defaultSetting.Default.staff_name.Length > 0 &&
+                defaultSetting.Default.department.Length > 0 &&
+                defaultSetting.Default.source_path_d.Length > 0 &&
+                defaultSetting.Default.source_path_w.Length > 0 &&
+                defaultSetting.Default.source_path_h.Length > 0 &&
+                defaultSetting.Default.target_path_d.Length > 0;
+            if (settingCheck) { return true; }
+            else
             {
-                IWorkbook target= staffDataWrite(targetType);
-                if(target != null )
-                {
-                    dailyReportWrite(target, panels,tomorrowPanels);
-                    saveFile(target, targetType);
-                }
-
+                MessageBox.Show("請確認資料");
+                return false;
             }
-            catch { throw; }
-        }
-
-        public void ExcecuteFile(IWorkbook target)
-        {
-            saveFile(target, FileNameEnum.周報表);
         }
         /// <summary>
         /// 用excel檔案中標題 確認來源檔案是否正常
@@ -79,54 +80,58 @@ namespace JDI_ReportMaker.Util
                 return false;
             }
             target = loadFile(defaultSetting.Default.source_path_d);
-            if(target.GetSheetName(0) != "日報表")
+            if (target.GetSheetName(0) != "日報表")
             {
-                MessageBox.Show("日報表檔案異常");
+                MessageBox.Show("日報表檔案異常或未關閉檔案");
                 return false;
             }
             target = loadFile(defaultSetting.Default.source_path_w);
             if (target.GetSheetName(0) != "週報表")
             {
-                MessageBox.Show("週報表檔案異常");
+                MessageBox.Show("週報表檔案異常或未關閉檔案");
                 return false;
             }
             target = loadFile(defaultSetting.Default.source_path_h);
             if (target.GetSheetName(0) != "工時表")
             {
-                MessageBox.Show("工時表檔案異常");
+                MessageBox.Show("工時表檔案異常或未關閉檔案");
                 return false;
             }
             return true;
         }
+
+
+
+
         /// <summary>
-        /// 確認員工姓名、編號、來源檔案、目的地是否有輸入
+        /// 寫入日報表
         /// </summary>
-        /// <returns></returns>
-        private bool inputCheck()
-        {
-            bool settingCheck = defaultSetting.Default.staff_name.Length > 0 &&
-                defaultSetting.Default.department.Length > 0 &&
-                defaultSetting.Default.source_path_d.Length > 0 &&
-                defaultSetting.Default.source_path_w.Length > 0 &&
-                defaultSetting.Default.source_path_h.Length > 0&&
-                defaultSetting.Default.target_path_d.Length>0;
-            if (settingCheck) { return true; }
-            else {
-                MessageBox.Show("請確認資料");
-                return false; }
-        }
-        /// <summary>
-        /// 檢查並寫入日報表的內容
-        /// </summary>
-        /// <param name="target"></param>
         /// <param name="panels"></param>
         /// <param name="tomorrowPanels"></param>
-        private void dailyReportWrite(IWorkbook target,List<TodayReportPanel> panels,List<TomorrowReportPanel> tomorrowPanels)
+        public void WritePanelToExcel(List<TodayReportPanel> panels,List<TomorrowReportPanel> tomorrowPanels)
         {
-            DailyReportWriter dailyReportWriter = new DailyReportWriter();
-            dailyReportWriter.WriteTodayPanel(panels, target);
-            dailyReportWriter.WriteTomorrowPanel(tomorrowPanels, target);
+            FileNameEnum targetType = FileNameEnum.日報表;
+            try
+            {
+                IWorkbook target= staffDataWrite(targetType);
+                if(target != null )
+                {
+                    //將面板內容寫入Excel
+                    DailyReportWriter dailyReportWriter = new DailyReportWriter();
+                    dailyReportWriter.WriteTodayPanel(panels, target);
+                    dailyReportWriter.WriteTomorrowPanel(tomorrowPanels, target);
+                    saveFile(target, targetType);
+                }
+
+            }
+            catch { throw; }
         }
+
+        /// <summary>
+        /// 檢查面板內容並彈出提醒視窗
+        /// </summary>
+        /// <param name="panels"></param>
+        /// <returns></returns>
         public bool CheckPanelInput(List<TodayReportPanel> panels)
         {
             //檢查日工時 報表內容
@@ -183,7 +188,7 @@ namespace JDI_ReportMaker.Util
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        private bool WarningBox(string message)
+        internal bool WarningBox(string message)
         {
             MessageBoxResult result=MessageBox.Show("問題列表:\n"+message+"\n 是否繼續執行?","警告",MessageBoxButton.YesNo,MessageBoxImage.Warning);
             if(result == MessageBoxResult.Yes)
@@ -208,7 +213,7 @@ namespace JDI_ReportMaker.Util
                     cellPath[0] = [0, 5, 0];//姓名
                     cellPath[1] = [0, 5, 3];//部門
                     cellPath[2] = [0, 5, 7]; break; //日期
-                case FileNameEnum.周報表:
+                case FileNameEnum.週報表:
                     target = loadFile(defaultSetting.Default.source_path_w);
                     settingWritter = new DailyWeeklySettingWirter();
                     cellPath[0] = [0, 5, 0];//姓名
@@ -251,7 +256,7 @@ namespace JDI_ReportMaker.Util
             }
             catch(Exception e)
             {
-                MessageBox.Show("檔案路徑異常"+e.Message);
+                MessageBox.Show("檔案路徑異常或目標檔案正開啟\n"+e.Message);
                 return null;
             }
         }
@@ -260,7 +265,7 @@ namespace JDI_ReportMaker.Util
         /// </summary>
         /// <param name="sourceWorkbook">原檔</param>
         /// <param name="targerFilePath">另存檔案的位置與名稱</param>
-        private void saveFile(IWorkbook sourceWorkbook, FileNameEnum fileNameEnum)
+        internal void saveFile(IWorkbook sourceWorkbook, FileNameEnum fileNameEnum)
         {
             //設定檔名:報表名+員工名+日期
             string? date = defaultSetting.Default.date;
@@ -306,6 +311,16 @@ namespace JDI_ReportMaker.Util
                 else { break; }
             }
             return jobProjects;
+        }
+
+        internal ISheet GetReportSheet(FileNameEnum fileType,IWorkbook target)
+        {
+            ISheet sheet =target.GetSheet(fileType.ToString());
+            if(sheet == null)
+            {
+                sheet= target.GetSheetAt(0);
+            }
+            return sheet;
         }
     }
 }

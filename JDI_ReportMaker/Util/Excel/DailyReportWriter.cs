@@ -15,6 +15,8 @@ namespace JDI_ReportMaker.Util.ExcelWriter
 {
     class DailyReportWriter : ExcelWritter
     {
+        SourceController controller = new SourceController();
+
         public override void WriteExcel(int[][] cells, IWorkbook target)
         {
             throw new NotImplementedException();
@@ -26,11 +28,7 @@ namespace JDI_ReportMaker.Util.ExcelWriter
         /// <param name="target"></param>
         public void WriteTodayPanel(List<TodayReportPanel> panels,IWorkbook target)
         {
-            ISheet sheet = target.GetSheet("日報表");
-            if(sheet == null)
-            {
-                sheet = target.GetSheetAt(0);
-            }
+            ISheet sheet = controller.GetReportSheet(FileNameEnum.日報表, target);
             int rowIndex = 7;
             //設定勾選格的對齊方式、字體
             ICellStyle style = target.CreateCellStyle();
@@ -71,9 +69,7 @@ namespace JDI_ReportMaker.Util.ExcelWriter
         }
         public void WriteTomorrowPanel(List<TomorrowReportPanel> panels,IWorkbook target)
         {
-            ISheet sheet = target.GetSheet("日報表");
-            if (sheet == null)
-                sheet = target.GetSheetAt(0);
+            ISheet sheet = controller.GetReportSheet(FileNameEnum.日報表, target);
             int rowIndex = 15;
             for(int i=0;i< panels.Count;i++)
             {

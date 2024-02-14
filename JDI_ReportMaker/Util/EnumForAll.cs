@@ -8,7 +8,7 @@ namespace JDI_ReportMaker
 {
     public enum FileNameEnum
     {
-        日報表,周報表,工時表
+        日報表,週報表,工時表
     }
     internal class EnumForAll
     {

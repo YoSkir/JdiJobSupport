@@ -12,7 +12,7 @@
         <DatePicker x:Name="datePicker" HorizontalAlignment="Left" Margin="134,15,0,0" VerticalAlignment="Top" Grid.Column="2"/>
         <Button x:Name="dataConfirmButton" Content="設定" HorizontalAlignment="Left" Margin="1038,413,0,0" VerticalAlignment="Top" Click="settingWindowButton_Click" Width="72"/>
         <Label x:Name="logLabel" Content="" HorizontalAlignment="Center" Margin="0,681,0,0" VerticalAlignment="Top" Width="1212" Height="97"/>
-        <Button x:Name="todayButton" Content="今天" HorizontalAlignment="Left" Margin="234,15,0,0" VerticalAlignment="Top" Click="todayButton_Click" Grid.Column="2"/>
+        <Button x:Name="todayButton" Content="重置日期為今天" HorizontalAlignment="Left" Margin="234,15,0,0" VerticalAlignment="Top" Click="todayButton_Click" Width="89"/>
         <CheckBox x:Name="godModeCheckBox" Content="無視檔案異常" Margin="418,667,554,84" Visibility="Hidden" Grid.Column="2"/>
         <Button x:Name="cleanDefaultButton" Content="清空預設設定" HorizontalAlignment="Left" Margin="952,667,0,0" VerticalAlignment="Top" Click="cleanDefaultButton_Click" Visibility="Hidden" Grid.Column="2"/>
         <Button x:Name="resetPanel" Content="面板異常" HorizontalAlignment="Left" Margin="1038,19,0,0" VerticalAlignment="Top" Width="72" Click="resetPanel_Click" Grid.Column="2"/>

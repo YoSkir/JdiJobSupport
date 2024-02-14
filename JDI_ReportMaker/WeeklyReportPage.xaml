@@ -6,28 +6,45 @@
         xmlns:local="clr-namespace:JDI_ReportMaker"
         mc:Ignorable="d"
         Title="週報表" Height="600" Width="800">
-    <Grid>
+    <Grid x:Name="weekRoportGrid">
         <Button x:Name="saveWeekReportButton" Content="儲存週報表" HorizontalAlignment="Left" Margin="693,529,0,0" VerticalAlignment="Top" Click="saveWeekReportButton_Click"/>
-        <TextBox x:Name="titleTbox_mon" HorizontalAlignment="Left" Margin="79,106,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
-        <TextBox x:Name="describTbox_mon" HorizontalAlignment="Left" Margin="507,106,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
-        <Label Content="周一" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Width="64"/>
+        <TextBox x:Name="titleTbox_mon" HorizontalAlignment="Left" Margin="79,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
+        <TextBox x:Name="describTbox_mon" HorizontalAlignment="Left" Margin="507,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
+        <Label Content="周一" HorizontalAlignment="Left" Margin="10,93,0,0" VerticalAlignment="Top" Width="64"/>
         <TextBox x:Name="titleTbox_tue" HorizontalAlignment="Left" Margin="79,168,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
         <TextBox x:Name="describTbox_tue" HorizontalAlignment="Left" Margin="507,168,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
         <Label Content="周二" HorizontalAlignment="Left" Margin="10,168,0,0" VerticalAlignment="Top" Width="64"/>
         <TextBox x:Name="titleTbox_wed" HorizontalAlignment="Left" Margin="79,237,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
         <TextBox x:Name="describTbox_wed" HorizontalAlignment="Left" Margin="507,237,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
         <Label Content="周三" HorizontalAlignment="Left" Margin="10,237,0,0" VerticalAlignment="Top" Width="64"/>
-        <TextBox x:Name="titleTbox_thu" HorizontalAlignment="Left" Margin="79,303,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
-        <TextBox x:Name="describTbox_thu" HorizontalAlignment="Left" Margin="507,303,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
-        <Label Content="周四" HorizontalAlignment="Left" Margin="10,303,0,0" VerticalAlignment="Top" Width="64"/>
-        <TextBox x:Name="titleTbox_fri" HorizontalAlignment="Left" Margin="79,376,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
-        <TextBox x:Name="describTbox_fri" HorizontalAlignment="Left" Margin="507,376,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
-        <Label Content="周五" HorizontalAlignment="Left" Margin="10,376,0,0" VerticalAlignment="Top" Width="64"/>
-        <TextBox x:Name="titleTbox_sat" HorizontalAlignment="Left" Margin="79,442,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
-        <TextBox x:Name="describTbox_sat" HorizontalAlignment="Left" Margin="507,442,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
-        <Label Content="周六" HorizontalAlignment="Left" Margin="10,442,0,0" VerticalAlignment="Top" Width="64"/>
+        <TextBox x:Name="titleTbox_thu" HorizontalAlignment="Left" Margin="79,312,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
+        <TextBox x:Name="describTbox_thu" HorizontalAlignment="Left" Margin="507,312,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
+        <Label Content="周四" HorizontalAlignment="Left" Margin="10,312,0,0" VerticalAlignment="Top" Width="64"/>
+        <TextBox x:Name="titleTbox_fri" HorizontalAlignment="Left" Margin="79,385,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
+        <TextBox x:Name="describTbox_fri" HorizontalAlignment="Left" Margin="507,385,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
+        <Label Content="周五" HorizontalAlignment="Left" Margin="10,385,0,0" VerticalAlignment="Top" Width="64"/>
+        <TextBox x:Name="titleTbox_sat" HorizontalAlignment="Left" Margin="79,460,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
+        <TextBox x:Name="describTbox_sat" HorizontalAlignment="Left" Margin="507,460,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
+        <Label Content="周六" HorizontalAlignment="Left" Margin="10,460,0,0" VerticalAlignment="Top" Width="64"/>
         <ComboBox x:Name="weekCbox" HorizontalAlignment="Left" Margin="79,45,0,0" VerticalAlignment="Top" Width="185"/>
         <Label Content="期間" HorizontalAlignment="Left" Margin="79,15,0,0" VerticalAlignment="Top" Width="93"/>
+        <Label x:Name="SaveButtonLogLabel" Content="" HorizontalAlignment="Left" Margin="601,529,0,0" VerticalAlignment="Top" Width="86"/>
+        <TextBox x:Name="titleTbox_mon複製__C_" HorizontalAlignment="Left" Margin="79,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
+        <TextBox x:Name="describTbox_mon複製__C_" HorizontalAlignment="Left" Margin="507,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
+        <TextBox x:Name="titleTbox_tue複製__C_" HorizontalAlignment="Left" Margin="79,199,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
+        <TextBox x:Name="describTbox_tue複製__C_" HorizontalAlignment="Left" Margin="507,199,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
+        <TextBox x:Name="titleTbox_wed複製__C_" HorizontalAlignment="Left" Margin="79,268,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
+        <TextBox x:Name="describTbox_wed複製__C_" HorizontalAlignment="Left" Margin="507,268,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
+        <TextBox x:Name="titleTbox_thu複製__C_" HorizontalAlignment="Left" Margin="79,343,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
+        <TextBox x:Name="describTbox_thu複製__C_" HorizontalAlignment="Left" Margin="507,343,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
+        <TextBox x:Name="titleTbox_fri複製__C_" HorizontalAlignment="Left" Margin="79,416,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
+        <TextBox x:Name="describTbox_fri複製__C_" HorizontalAlignment="Left" Margin="507,416,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
+        <Rectangle x:Name="box1" HorizontalAlignment="Center" Height="74" Margin="0,85,0,0" Stroke="Black" VerticalAlignment="Top" Width="800" Fill="#64FCED5C" Panel.ZIndex="-1"/>
+        <Rectangle HorizontalAlignment="Center" Height="73" Margin="0,159,0,0" Stroke="Black" VerticalAlignment="Top" Width="800" Panel.ZIndex="-1"/>
+        <Rectangle x:Name="box2" HorizontalAlignment="Center" Height="70" Margin="0,232,0,0" Stroke="Black" VerticalAlignment="Top" Width="800" Panel.ZIndex="-1" Fill="#64FCED5C"/>
+        <Rectangle HorizontalAlignment="Center" Height="74" Margin="0,302,0,0" Stroke="Black" VerticalAlignment="Top" Width="800" Panel.ZIndex="-1"/>
+        <Rectangle x:Name="box3" HorizontalAlignment="Center" Height="74" Margin="0,376,0,0" Stroke="Black" VerticalAlignment="Top" Width="800" Panel.ZIndex="-1" Fill="#64FCED5C"/>
+        <Rectangle HorizontalAlignment="Center" Height="52" Margin="0,450,0,0" Stroke="Black" VerticalAlignment="Top" Width="800" Panel.ZIndex="-1"/>
 
     </Grid>
 </Window>
