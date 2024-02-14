@@ -21,16 +21,16 @@ namespace JDI_ReportMaker.Util.PanelComponent
         private Button? addBtn, removeBtn;
         private MainWindow parentWindow;
 
-        private Dictionary<string, string> projects;
+        private Dictionary<string, string>? projectsNameCode;
 
         public TodayReportPanel(MainWindow mainWindow)
         {
+            parentWindow = mainWindow;
             //設定專案清單
             SetJobProjectList();
             //創造面板
             CreatePanel();
             //連接主畫面
-            parentWindow = mainWindow;
         }
         public override StackPanel GetPanel()
         {
@@ -65,11 +65,11 @@ namespace JDI_ReportMaker.Util.PanelComponent
             //面板
             thisPanel.Children.Add(numLabel);
             //工作專案下拉選單
-            if (projects == null)
+            if (projectsNameCode == null)
             {
                 SetJobProjectList();
             }
-            comboBox.ItemsSource = projects.Values;
+            comboBox.ItemsSource = projectsNameCode.Keys;
             comboBox.IsEditable = true;
             comboBox.Text = "工時表統計用";
             thisPanel.Children.Add(comboBox);
@@ -92,8 +92,8 @@ namespace JDI_ReportMaker.Util.PanelComponent
         {
             try
             {
-                SourceController sourceController = new SourceController();
-                projects = sourceController.GetJobProjectMap();
+                SourceController sourceController = parentWindow.GetSourceController();
+                projectsNameCode = sourceController.GetJobProjectMap();
             }
             catch (Exception ex) { MessageBox.Show("專案列表載入失敗，請確認工時表是否正常"); }
         }
@@ -128,7 +128,8 @@ namespace JDI_ReportMaker.Util.PanelComponent
 
         public string GetPanelNum() { return numLabel.Content.ToString(); }
         public string GetTitle() { return projectTitle.Text; }
-        public string GetComboBox() { return comboBox.Text; }
+        public string GetProjectName() { return comboBox.Text; }
+        public string GetProjectCode() { return projectsNameCode[comboBox.Text]; }
         public string GetDescribtion() { return projectDescription.Text; }
         public string GetWorkHour()
         {

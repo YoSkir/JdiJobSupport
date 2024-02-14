@@ -6,12 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.Windows;
+using JDI_ReportMaker.Util;
 
 namespace JDI_ReportMaker
 {
-    internal class DBController
+    public class DBController
     {
-        private SQLiteConnection connection;
+        private SQLiteConnection? connection;
 
 
 
@@ -19,11 +20,17 @@ namespace JDI_ReportMaker
         {
             try
             {
-                string connectionStr = "Data Source=JJSDatabase.sqlite;Version=3;";
-                connection = new SQLiteConnection(connectionStr);
+                connection = GetConnection(Const.DatabaseFileName);
                 CreateTable();
             }catch (Exception ex) { MessageBox.Show("資料庫創建失敗"); }
 
+        }
+
+        public SQLiteConnection GetConnection(string dbName)
+        {
+            string connectionStr = $"Data Source={dbName};Version=3;";
+            connection = new SQLiteConnection(connectionStr);
+            return connection;
         }
 
         private void Connect()
@@ -55,6 +62,19 @@ namespace JDI_ReportMaker
                 "hour_spent TINYINT(5) " +
                 "); ";
             SQLiteCommand cmd = new SQLiteCommand(sqlStr,connection);
+            cmd.ExecuteNonQuery();
+            Disconnect();
+        }
+
+        public void InsertWorkHour(string recordDate,string projectCode,string projectName,string hourSpent)
+        {
+            Connect();
+            string sqlstr = 
+                "INSERT INTO work_hour " +
+                "(report_date,project_code,project_name,hour_spent) " +
+                "VALUES " +
+                $"('{recordDate}','{projectCode}','{projectName}',{hourSpent}); ";
+            SQLiteCommand cmd=new SQLiteCommand(sqlstr,connection);
             cmd.ExecuteNonQuery();
             Disconnect();
         }

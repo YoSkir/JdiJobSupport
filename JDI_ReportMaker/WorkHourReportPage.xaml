@@ -7,7 +7,24 @@
         mc:Ignorable="d"
         Title="工時表" Height="600" Width="800">
     <Grid>
-        <DataGrid d:ItemsSource="{d:SampleData ItemCount=5}"/>
+        <DataGrid x:Name="DBDataGrid" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="16,38,486,19" AutoGeneratingColumn="DBDataGrid_AutoGeneratingColumn">
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Background" Value="#FF37371D"/>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Resources>
+                <!-- 定義TextBlock的全局樣式 -->
+                <Style TargetType="TextBlock">
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="TextAlignment" Value="Left"/>
+                </Style>
+            </DataGrid.Resources>
+        </DataGrid>
+        <Button x:Name="saveWorkHourReportButton" Content="輸出工時表" HorizontalAlignment="Left" Margin="718,510,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="choseMonthCBox" HorizontalAlignment="Left" Margin="170,7,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="請選擇月份(僅保留一個月)" HorizontalAlignment="Left" Margin="16,8,0,0" VerticalAlignment="Top" Width="150"/>
 
     </Grid>
 </Window>

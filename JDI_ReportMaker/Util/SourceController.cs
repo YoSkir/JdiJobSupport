@@ -24,8 +24,14 @@ namespace JDI_ReportMaker.Util
             = new Dictionary<string, string> { {"日報表", "佳帝科技員工日報表 "},
                                                {"週報表", "週報表 "},
                                                {"工時表", "工時表 "}};
+        private Dictionary<string, string>? projectMap;
+        private DBController? dbController;
 
-
+        public SourceController(DBController dBController)
+        {
+            this.dbController = dBController;
+            projectMap=GetJobProjectMap();
+        }
 
         /// <summary>
         /// 確認來源檔案、設定是否正常
@@ -117,7 +123,7 @@ namespace JDI_ReportMaker.Util
                 if(target != null )
                 {
                     //將面板內容寫入Excel
-                    DailyReportWriter dailyReportWriter = new DailyReportWriter();
+                    DailyReportWriter dailyReportWriter = new DailyReportWriter(this);
                     dailyReportWriter.WriteTodayPanel(panels, target);
                     dailyReportWriter.WriteTomorrowPanel(tomorrowPanels, target);
                     saveFile(target, targetType);
@@ -140,7 +146,7 @@ namespace JDI_ReportMaker.Util
             foreach(TodayReportPanel panel in panels)
             {
                 string index=panel.GetPanelNum();
-                if (panel.GetComboBox() == "工時表統計用")
+                if (panel.GetProjectName() == "工時表統計用")
                 {
                     problemList += $"第{index}欄尚未選擇專案項目\n";
                 }
@@ -286,7 +292,7 @@ namespace JDI_ReportMaker.Util
             }
         }
         /// <summary>
-        /// 獲取工時表的專案清單
+        /// 獲取工時表的專案清單<名稱,編號>
         /// </summary>
         /// <returns></returns>
         public Dictionary<string,string> GetJobProjectMap()
@@ -306,13 +312,18 @@ namespace JDI_ReportMaker.Util
                 IRow workHourRow=workHourSheet.GetRow(i);
                 if (workHourRow.GetCell(1).ToString().Length > 0)
                 {
-                    jobProjects.Add(workHourRow.GetCell(0).ToString(), workHourRow.GetCell(1).ToString());
+                    jobProjects.Add(workHourRow.GetCell(1).ToString(), workHourRow.GetCell(0).ToString());
                 }
                 else { break; }
             }
             return jobProjects;
         }
-
+        /// <summary>
+        /// 獲取資料表
+        /// </summary>
+        /// <param name="fileType"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
         internal ISheet GetReportSheet(FileNameEnum fileType,IWorkbook target)
         {
             ISheet sheet =target.GetSheet(fileType.ToString());
@@ -321,6 +332,11 @@ namespace JDI_ReportMaker.Util
                 sheet= target.GetSheetAt(0);
             }
             return sheet;
+        }
+
+        internal DBController GetDBController()
+        {
+            return dbController;
         }
     }
 }

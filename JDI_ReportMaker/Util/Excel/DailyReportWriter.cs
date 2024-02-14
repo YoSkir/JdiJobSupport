@@ -15,7 +15,14 @@ namespace JDI_ReportMaker.Util.ExcelWriter
 {
     class DailyReportWriter : ExcelWritter
     {
-        SourceController controller = new SourceController();
+        SourceController controller;
+        DBController dBController;
+
+        public DailyReportWriter(SourceController sourceController)
+        {
+            controller = sourceController;
+            dBController = sourceController.GetDBController();
+        }
 
         public override void WriteExcel(int[][] cells, IWorkbook target)
         {
@@ -42,9 +49,12 @@ namespace JDI_ReportMaker.Util.ExcelWriter
             {
                 for(int row=0;row< panels.Count; row++)
                 {
+                    TodayReportPanel panel = panels[row];
                     IRow panelRow= sheet.GetRow(rowIndex+row);
-                    panelRow.GetCell(1).SetCellValue(panels[row].GetPanelNum());
-                    panelRow.GetCell(2).SetCellValue(panels[row].GetTitle());
+                    //寫入欄位編號
+                    panelRow.GetCell(1).SetCellValue(panel.GetPanelNum());
+                    //寫入欄位標題
+                    panelRow.GetCell(2).SetCellValue(panel.GetTitle());
                     //刪除原本的勾選框
                     HSSFPatriarch patriarch = (HSSFPatriarch)sheet.DrawingPatriarch;
                     var children = patriarch.Children;
@@ -53,8 +63,9 @@ namespace JDI_ReportMaker.Util.ExcelWriter
                     {
                         patriarch.RemoveShape(shapes[i]);
                     }
+                    //寫入勾選框
                     panelRow.GetCell(3).CellStyle = style;
-                    if (panels[row].GetDone())
+                    if (panel.GetDone())
                     {
                         panelRow.GetCell(3).SetCellValue("\u2611 已完成            \u2610 未完成");
                     }
@@ -63,10 +74,26 @@ namespace JDI_ReportMaker.Util.ExcelWriter
                         panelRow.GetCell(3).SetCellValue("\u2610 已完成            \u2611 未完成");
 
                     }
-                    panelRow.GetCell(7).SetCellValue(panels[row].GetDescribtion());
+                    //寫入說明
+                    panelRow.GetCell(7).SetCellValue(panel.GetDescribtion());
+                    //寫入工時表資料庫
+                    WriteWorkHourDB(panel);
                 }
             }catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
+        /// <summary>
+        /// 將欄位資料寫入工時表資料庫
+        /// </summary>
+        /// <param name="todayReportPanel"></param>
+        private void WriteWorkHourDB(TodayReportPanel todayReportPanel)
+        {
+            string projectName = todayReportPanel.GetProjectName();
+            string projectCode = todayReportPanel.GetProjectCode();
+            string hourSpend = todayReportPanel.GetWorkHour();
+            string reportTime = defaultSetting.Default.date;
+            dBController.InsertWorkHour(reportTime, projectCode, projectName, hourSpend);
+        }
+
         public void WriteTomorrowPanel(List<TomorrowReportPanel> panels,IWorkbook target)
         {
             ISheet sheet = controller.GetReportSheet(FileNameEnum.日報表, target);

@@ -32,6 +32,7 @@ namespace JDI_ReportMaker
         private List<TodayReportPanel>? todayPanels;
         private List<TomorrowReportPanel>? tomorrowPanels;
         private WeeklyReportPage? weeklyReportPage;
+        private WorkHourReportPage? workHourReportPage;
         private DBController? dbController;
 
         public MainWindow()
@@ -44,7 +45,7 @@ namespace JDI_ReportMaker
         /// </summary>
         private void initialData()
         {
-            sourceController = new SourceController();
+            GetSourceController();
             //判斷設定異常時打開設定視窗 否則初始化日報表面板
             if (!sourceController.SourceCheck())
             {
@@ -54,8 +55,6 @@ namespace JDI_ReportMaker
             {
                 InitialPanel();
             }
-            weeklyReportPage = new WeeklyReportPage();
-            dbController = new DBController();
         }
         /// <summary>
         /// 初始化日報表面板
@@ -83,6 +82,13 @@ namespace JDI_ReportMaker
             Show();
         }
 
+        internal SourceController GetSourceController()
+        {
+            if (dbController == null) { dbController=new DBController(); }
+            if (sourceController == null) sourceController = new SourceController(dbController);
+            return sourceController;
+        }
+
         private void SaveFileButton_Click(object sender, RoutedEventArgs e)
         {
             resultLabel.Content = "";
@@ -91,7 +97,7 @@ namespace JDI_ReportMaker
                 datePicker.SelectedDate?.ToString("yyyy-MM-dd"): DateTime.Now.ToString("yyyy-MM-dd");
             //此布林用於警告使用者輸入有異常是否繼續
             bool inputOK = false;
-            if(sourceController==null)sourceController = new SourceController();
+            if (sourceController == null) GetSourceController();
             if (godModeCheckBox.IsChecked == true|| sourceController.SourceCheck())
             {
                 inputOK = sourceController.CheckPanelInput(todayPanels);
@@ -112,7 +118,7 @@ namespace JDI_ReportMaker
         /// </summary>
         private void WriteDailyReport()
         {
-            if(sourceController==null)sourceController = new SourceController();
+            if (sourceController == null) GetSourceController();
             try
             {
                 //做報表種類判斷
@@ -231,7 +237,7 @@ namespace JDI_ReportMaker
         /// <param name="e"></param>
         private void SettingWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if(sourceController==null)sourceController=new SourceController();
+            if (sourceController == null) GetSourceController();
             if (!sourceController.SourceCheck())
             {
                 e.Cancel = true;
@@ -255,12 +261,17 @@ namespace JDI_ReportMaker
         {
             defaultSetting.Default.date = datePicker.Text.Length > 0 ?
                                           datePicker.SelectedDate?.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
-            if (weeklyReportPage == null) weeklyReportPage = new WeeklyReportPage();
+            weeklyReportPage = new WeeklyReportPage(this);
             weeklyReportPage.Show();
         }
 
         private void workHourSheet_Click(object sender, RoutedEventArgs e)
         {
+            defaultSetting.Default.date = datePicker.Text.Length > 0 ?
+                              datePicker.SelectedDate?.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
+            if (dbController==null)dbController=new DBController();
+            workHourReportPage=new WorkHourReportPage(dbController);
+            workHourReportPage.Show();
         }
     }
 }

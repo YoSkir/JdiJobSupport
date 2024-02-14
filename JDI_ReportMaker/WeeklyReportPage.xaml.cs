@@ -29,14 +29,16 @@ namespace JDI_ReportMaker
         private DateTime[]? thisWeekEveryDay;
         //存放本月每週第一天的陣列
         private List<DateTime>? everyWeekMonday;
+        private MainWindow? parent;
         private int thisMonth = DateTime.Now.Month;
         private int thisYear = DateTime.Now.Year;
 
-        public WeeklyReportPage()
+        public WeeklyReportPage(MainWindow mainWindow)
         {
             InitializeComponent();
             SaveButtonLogLabel.Content = "";
-            sourceController = new SourceController();
+            parent = mainWindow;
+            sourceController = parent.GetSourceController();
             everyWeekMonday = new List<DateTime>();
             SetWeekComboBox();
             thisWeekEveryDay =new DateTime[7];
@@ -86,7 +88,6 @@ namespace JDI_ReportMaker
         /// </summary>
         private void DrawCalender(IWorkbook weekReport)
         {
-            if(sourceController==null) { sourceController = new SourceController(); }
             ISheet sheet = sourceController.GetReportSheet(FileNameEnum.週報表, weekReport);
             //設定月曆旁的本月份
             string callenderTitle = DateTime.Now.ToString("yyyy/MM");
@@ -172,7 +173,6 @@ namespace JDI_ReportMaker
 
         private void saveWeekReportButton_Click(object sender, RoutedEventArgs e)
         {
-            if(sourceController == null) { sourceController=new SourceController(); }
             FileNameEnum fileType = FileNameEnum.週報表;
             try
             {
@@ -198,7 +198,6 @@ namespace JDI_ReportMaker
         {
             try
             {
-                if (sourceController == null) { sourceController=new SourceController(); }
                 ISheet sheet = sourceController.GetReportSheet(FileNameEnum.週報表, target);
                 IRow irow;
                 //獲得面板上內容的陣列(由左至右由上至下共12格)
