@@ -86,21 +86,21 @@ namespace JDI_ReportMaker.Util
                 return false;
             }
             target = loadFile(defaultSetting.Default.source_path_d);
-            if (target.GetSheetName(0) != "日報表")
+            if (target==null||target.GetSheetName(0) != "日報表")
             {
-                MessageBox.Show("日報表檔案異常或未關閉檔案");
+                MessageBox.Show(target==null?"請關閉所有報表":"日報表檔案異常");
                 return false;
             }
             target = loadFile(defaultSetting.Default.source_path_w);
-            if (target.GetSheetName(0) != "週報表")
+            if (target == null || target.GetSheetName(0) != "週報表")
             {
-                MessageBox.Show("週報表檔案異常或未關閉檔案");
+                MessageBox.Show(target == null ? "請關閉所有報表" : "日報表檔案異常");
                 return false;
             }
             target = loadFile(defaultSetting.Default.source_path_h);
-            if (target.GetSheetName(0) != "工時表")
+            if (target == null || target.GetSheetName(0) != "工時表")
             {
-                MessageBox.Show("工時表檔案異常或未關閉檔案");
+                MessageBox.Show(target == null ? "請關閉所有報表" : "日報表檔案異常");
                 return false;
             }
             return true;
@@ -146,7 +146,7 @@ namespace JDI_ReportMaker.Util
             foreach(TodayReportPanel panel in panels)
             {
                 string index=panel.GetPanelNum();
-                if (panel.GetProjectName() == "工時表統計用")
+                if (panel.GetProjectName() == "未選擇專案")
                 {
                     problemList += $"第{index}欄尚未選擇專案項目\n";
                 }
@@ -169,7 +169,8 @@ namespace JDI_ReportMaker.Util
             {
                 problemList += "工時加總不是8小時\n";
             }
-            return WarningBox(problemList);
+            return problemList.Length == 0 ? true : WarningBox(problemList);
+
         }
         public bool CheckPanelInput(List<TomorrowReportPanel> panels)
         {
@@ -187,7 +188,8 @@ namespace JDI_ReportMaker.Util
                     problemList += $"第{index}欄明日預計尚未輸入細項\n";
                 }
             }
-            return WarningBox(problemList);
+            return problemList.Length == 0 ? true : WarningBox(problemList);
+
         }
         /// <summary>
         /// 可自定義文字的警告視窗

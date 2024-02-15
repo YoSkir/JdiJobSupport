@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JDI_ReportMaker"
         mc:Ignorable="d"
-        Title="工時表" Height="600" Width="800">
+        Title="工時表" Height="800" Width="1200">
     <Grid>
-        <DataGrid x:Name="DBDataGrid" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="16,38,486,19" AutoGeneratingColumn="DBDataGrid_AutoGeneratingColumn">
+        <DataGrid x:Name="DBDataGrid" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="16,38,721,19" AutoGeneratingColumn="DBDataGrid_AutoGeneratingColumn">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="Background" Value="#FF37371D"/>
@@ -22,9 +22,10 @@
                 </Style>
             </DataGrid.Resources>
         </DataGrid>
-        <Button x:Name="saveWorkHourReportButton" Content="輸出工時表" HorizontalAlignment="Left" Margin="718,510,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="saveWorkHourReportButton" Content="輸出工時表" HorizontalAlignment="Left" Margin="1085,725,0,0" VerticalAlignment="Top" Height="40" Width="84"/>
         <ComboBox x:Name="choseMonthCBox" HorizontalAlignment="Left" Margin="170,7,0,0" VerticalAlignment="Top" Width="120"/>
-        <Label Content="請選擇月份(僅保留一個月)" HorizontalAlignment="Left" Margin="16,8,0,0" VerticalAlignment="Top" Width="150"/>
+        <Label Content="請選擇月份(僅保留一年)" HorizontalAlignment="Left" Margin="16,8,0,0" VerticalAlignment="Top" Width="150"/>
+        <StackPanel x:Name="SumaryPanel" Margin="504,38,10,80"/>
 
     </Grid>
 </Window>

@@ -76,11 +76,30 @@ namespace JDI_ReportMaker.Util.ExcelWriter
                     }
                     //寫入說明
                     panelRow.GetCell(7).SetCellValue(panel.GetDescribtion());
-                    //寫入工時表資料庫
-                    WriteWorkHourDB(panel);
+                    //確認資料出現重複日期 並且確定覆蓋後 寫入工時表資料庫
+                    bool replaceOldData=true;
+                    string targetDate = defaultSetting.Default.date;
+                    if (DayDataRepeat(targetDate))
+                    {
+                        replaceOldData = controller.WarningBox($"資料庫中已有{targetDate}的資料，繼續執行將刪除原有資料\n" +
+                            $"不繼續執行將產出日報表但不修改資料庫資料");
+                    }
+                    if (replaceOldData)
+                    {
+                        dBController.DeleteTargetDateReport(targetDate);
+                        WriteWorkHourDB(panel);
+                    }
                 }
             }catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
+
+        private bool DayDataRepeat(string date)
+        {
+            List<string> list= dBController.SelectExistDateData(date);
+            return list.Count>0?true:false;
+
+        }
+
         /// <summary>
         /// 將欄位資料寫入工時表資料庫
         /// </summary>

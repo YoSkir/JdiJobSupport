@@ -128,8 +128,16 @@ namespace JDI_ReportMaker.Util.PanelComponent
 
         public string GetPanelNum() { return numLabel.Content.ToString(); }
         public string GetTitle() { return projectTitle.Text; }
-        public string GetProjectName() { return comboBox.Text; }
-        public string GetProjectCode() { return projectsNameCode[comboBox.Text]; }
+        public string GetProjectName() 
+        {
+            if (comboBox.SelectedIndex == -1) return "未選擇專案";
+            return comboBox.Text; 
+        }
+        public string GetProjectCode() 
+        {
+            if (comboBox.SelectedIndex == -1) return "未選擇專案";
+            return projectsNameCode[comboBox.Text]; 
+        }
         public string GetDescribtion() { return projectDescription.Text; }
         public string GetWorkHour()
         {

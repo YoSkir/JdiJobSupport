@@ -269,7 +269,7 @@ namespace JDI_ReportMaker
         {
             defaultSetting.Default.date = datePicker.Text.Length > 0 ?
                               datePicker.SelectedDate?.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
-            if (dbController==null)dbController=new DBController();
+            dbController=new DBController();
             workHourReportPage=new WorkHourReportPage(dbController);
             workHourReportPage.Show();
         }
