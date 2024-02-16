@@ -75,11 +75,12 @@ namespace JDI_ReportMaker
         private void ChoseMonthCBox_DropDownClosed(object? sender, EventArgs e)
         {
             string yearMonth = ComboBoxStrToShowDBStr(choseMonthCBox.Text);
+            if(yearMonth.Length > 0)
             ShowDatabase(yearMonth);
         }
         private string ComboBoxStrToShowDBStr(string comboBoxStr)
         {
-            return comboBoxStr.Replace('年','-').Substring(0,7);
+            return comboBoxStr.Length > 0?comboBoxStr.Replace('年','-').Substring(0,7):"";
         }
         //設定下拉選單
         private void SetComboBoxList(List<string> list)
@@ -126,6 +127,11 @@ namespace JDI_ReportMaker
                     column.Binding.StringFormat = "MM月dd日";
                 }
             }
+        }
+
+        private void deleteTestData_Click(object sender, RoutedEventArgs e)
+        {
+            dBController.DeleteTestData();
         }
     }
 }

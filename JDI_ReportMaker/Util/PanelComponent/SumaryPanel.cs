@@ -21,6 +21,11 @@ namespace JDI_ReportMaker.Util.PanelComponent
             CreatePanel();
         }
 
+        public override void AddPanel()
+        {
+            throw new NotImplementedException();
+        }
+
         public override StackPanel CreatePanel()
         {
             thisPanel.Margin = new System.Windows.Thickness(0, 10, 0, 0);
@@ -42,6 +47,11 @@ namespace JDI_ReportMaker.Util.PanelComponent
         {
             if(thisPanel == null)return CreatePanel();
             return thisPanel;
+        }
+
+        public override void RemovePanel()
+        {
+            throw new NotImplementedException();
         }
 
         public void SetPanelValue(string projectCode,string projectName,string hourSpent)

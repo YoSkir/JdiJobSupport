@@ -29,17 +29,66 @@ namespace JDI_ReportMaker
     public partial class MainWindow : MetroWindow
     {
         private SourceController? sourceController;
-        private List<TodayReportPanel>? todayPanels;
-        private List<TomorrowReportPanel>? tomorrowPanels;
         private WeeklyReportPage? weeklyReportPage;
         private WorkHourReportPage? workHourReportPage;
         private DBController? dbController;
+
+        private List<TodayReportPanel> todayPanels = new List<TodayReportPanel>();
+        private List<TomorrowReportPanel> tomorrowPanels = new List<TomorrowReportPanel>();
 
         public MainWindow()
         {
             InitializeComponent();
             initialData();
         }
+
+        private void SaveFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            resultLabel.Content = "";
+            setDate();
+            writeDatabaseAndExcel();
+        }
+
+        private void settingWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenSettingWindow();
+        }
+
+        /// <summary>
+        /// 將日期重置今天
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void todayButton_Click(object sender, RoutedEventArgs e)
+        {
+            datePicker.Text = "";
+        }
+        /// <summary>
+        /// 開啟週報表頁面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void weeklyReportSheet_Click(object sender, RoutedEventArgs e)
+        {
+            setDate();
+            weeklyReportPage = new WeeklyReportPage(this);
+            weeklyReportPage.Show();
+        }
+        /// <summary>
+        /// 開啟工時表頁面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void workHourSheet_Click(object sender, RoutedEventArgs e)
+        {
+            setDate();
+            dbController = new DBController();
+            workHourReportPage = new WorkHourReportPage(dbController);
+            workHourReportPage.Show();
+        }
+
+
+
         /// <summary>
         /// 初始化設定
         /// </summary>
@@ -61,64 +110,68 @@ namespace JDI_ReportMaker
         /// </summary>
         private void InitialPanel()
         {
-            if (todayPanels == null)
+            if (todayPanels == null|| todayPanels.Count == 0)
             {
-                todayPanels = new List<TodayReportPanel>();
-                AddTodayPanel();
+                todayPanels = new List<TodayReportPanel> ();
+                TodayReportPanel panel = new TodayReportPanel(this);
+                todayPanels.Add(panel);
             }
-            if (tomorrowPanels == null)
+            if (tomorrowPanels == null|| tomorrowPanels.Count == 0)
             {
                 tomorrowPanels = new List<TomorrowReportPanel>();
-                AddTomorrowPanel();
+                TomorrowReportPanel panel=new TomorrowReportPanel(this);
+                tomorrowPanels.Add(panel);
             }
-            if (todayPanels.Count == 0)
-            {
-                AddTodayPanel();
-            }
-            if (tomorrowPanels.Count == 0)
-            {
-                AddTomorrowPanel();
-            }
-            Show();
+            ShowPanel();
         }
-
+        /// <summary>
+        /// 檢查並返回SourceController
+        /// </summary>
+        /// <returns></returns>
         internal SourceController GetSourceController()
         {
-            if (dbController == null) { dbController=new DBController(); }
+            if(dbController ==null) dbController = new DBController();
             if (sourceController == null) sourceController = new SourceController(dbController);
             return sourceController;
         }
+        /// <summary>
+        /// 檢查資料庫是否有重複資料?輸出並儲存日報表:不做任何事
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 
-        private void SaveFileButton_Click(object sender, RoutedEventArgs e)
+        private void writeDatabaseAndExcel()
         {
-            resultLabel.Content = "";
-            //如無選擇日期則默認今天
-            defaultSetting.Default.date=datePicker.Text.Length>0?
-                datePicker.SelectedDate?.ToString("yyyy-MM-dd"): DateTime.Now.ToString("yyyy-MM-dd");
-            //此布林用於警告使用者輸入有異常是否繼續
-            bool inputOK = false;
             if (sourceController == null) GetSourceController();
-            if (godModeCheckBox.IsChecked == true|| sourceController.SourceCheck())
+            if (godModeCheckBox.IsChecked == true || sourceController.SourceCheck())
             {
-                inputOK = sourceController.CheckPanelInput(todayPanels);
-                if(inputOK)
-                inputOK = sourceController.CheckPanelInput(tomorrowPanels);
-                if (inputOK)
+                if (checkPanelInput())
                 {
                     WriteDailyReport();
                 }
             }
-            else
-            {
-                logLabel.Content = "請確認檔案路徑、員工資料、檔案是否正常";
-            }
+        }
+        private bool checkPanelInput()
+        {
+            if (sourceController.CheckPanelInput(todayPanels))
+                return sourceController.CheckPanelInput(tomorrowPanels);
+            return false;
+        }
+
+        /// <summary>
+        /// 讀取日期選擇
+        /// </summary>
+        private void setDate()
+        {
+            //如無選擇日期則默認今天
+            defaultSetting.Default.date = datePicker.Text.Length > 0 ?
+                datePicker.SelectedDate?.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
         }
         /// <summary>
         /// 將日報表面板內容寫入檔案
         /// </summary>
         private void WriteDailyReport()
         {
-            if (sourceController == null) GetSourceController();
             try
             {
                 //做報表種類判斷
@@ -132,11 +185,6 @@ namespace JDI_ReportMaker
                 logLabel.Content = ex.Message;
             }
         }
-
-        private void settingWindowButton_Click(object sender, RoutedEventArgs e)
-        {
-            OpenSettingWindow();
-        }
         /// <summary>
         /// 打開設定視窗
         /// </summary>
@@ -147,88 +195,6 @@ namespace JDI_ReportMaker
             settingWindow.Closing += SettingWindow_Closing;
             //settingWindow.Owner = this;
             settingWindow.ShowDialog();
-        }
-        /// <summary>
-        /// 將日期重置今天
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void todayButton_Click(object sender, RoutedEventArgs e)
-        {
-            datePicker.Text = "";
-        }
-        /// <summary>
-        /// 重整畫面將欄位顯示於畫面上
-        /// </summary>
-        public void ShowPanel()
-        {
-            //清空面板
-            todayJobPanel.Children.Clear();
-            tomorrowPanelContainer.Children.Clear();
-            if (todayPanels == null)
-                todayPanels = new List<TodayReportPanel>();
-            for (int i = 0; i < todayPanels.Count; i++)
-            {
-                todayPanels[i].SetPanelNum(i + 1);
-                todayJobPanel.Children.Add(todayPanels[i].GetPanel());
-            }
-            if (tomorrowPanels == null)
-                tomorrowPanels = new List<TomorrowReportPanel>();
-            for (int i = 0; i < tomorrowPanels.Count; i++)
-            {
-                tomorrowPanels[i].SetPanelNum(i + 1);
-                tomorrowPanelContainer.Children.Add(tomorrowPanels[i].GetPanel());
-            }
-        }
-        /// <summary>
-        /// 新增面板事項欄位
-        /// </summary>
-        internal void AddTodayPanel()
-        {
-            if(todayPanels != null && todayPanels.Count < 7)
-            {
-                TodayReportPanel panel = new TodayReportPanel(this);
-                todayPanels.Add(panel);
-                ShowPanel();
-            }
-        }
-        internal void AddTomorrowPanel()
-        {
-            if(tomorrowPanels != null&&tomorrowPanels.Count < 5)
-            {
-                TomorrowReportPanel panel = new TomorrowReportPanel(this);
-                tomorrowPanels.Add(panel);
-                ShowPanel();
-            }
-        }
-        /// <summary>
-        /// 刪除面板特定欄位
-        /// </summary>
-        /// <param name="target">要刪除的欄位，由欄位本身回傳</param>
-        internal void RemovePanel(TodayReportPanel target)
-        {
-            if(todayPanels!=null && todayPanels.Count > 1)
-            {
-                todayPanels.Remove(target);
-                ShowPanel();
-            }
-        }
-        internal void RemovePanel(TomorrowReportPanel target)
-        {
-            if (tomorrowPanels != null && tomorrowPanels.Count > 1)
-            {
-                tomorrowPanels.Remove(target);
-                ShowPanel();
-            }
-        }
-        /// <summary>
-        /// 測試用 清空設定
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void cleanDefaultButton_Click(object sender, RoutedEventArgs e)
-        {
-            defaultSetting.Default.Reset();
         }
         /// <summary>
         /// 設定未完成時無法關閉設定視窗
@@ -248,6 +214,44 @@ namespace JDI_ReportMaker
             }
         }
         /// <summary>
+        /// 重整畫面將欄位顯示於畫面上
+        /// </summary>
+        public void ShowPanel()
+        {
+            //清空面板
+            todayJobPanel.Children.Clear();
+            tomorrowPanelContainer.Children.Clear();
+            for (int i = 0; i < todayPanels.Count; i++)
+            {
+                todayPanels[i].SetPanelNum(i + 1);
+                todayJobPanel.Children.Add(todayPanels[i].GetPanel());
+            }
+            for (int i = 0; i < tomorrowPanels.Count; i++)
+            {
+                tomorrowPanels[i].SetPanelNum(i + 1);
+                tomorrowPanelContainer.Children.Add(tomorrowPanels[i].GetPanel());
+            }
+        }
+
+        internal List<TodayReportPanel> GetTodayPanels()
+        {
+            return todayPanels;
+        }
+        internal List<TomorrowReportPanel> GetTomorrowPanels()
+        {
+            return tomorrowPanels;
+        }
+
+        /// <summary>
+        /// 測試用 清空設定
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cleanDefaultButton_Click(object sender, RoutedEventArgs e)
+        {
+            defaultSetting.Default.Reset();
+        }
+        /// <summary>
         /// 面板異常時重設面板
         /// </summary>
         /// <param name="sender"></param>
@@ -257,21 +261,5 @@ namespace JDI_ReportMaker
             InitialPanel();
         }
 
-        private void weeklyReportSheet_Click(object sender, RoutedEventArgs e)
-        {
-            defaultSetting.Default.date = datePicker.Text.Length > 0 ?
-                                          datePicker.SelectedDate?.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
-            weeklyReportPage = new WeeklyReportPage(this);
-            weeklyReportPage.Show();
-        }
-
-        private void workHourSheet_Click(object sender, RoutedEventArgs e)
-        {
-            defaultSetting.Default.date = datePicker.Text.Length > 0 ?
-                              datePicker.SelectedDate?.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
-            dbController=new DBController();
-            workHourReportPage=new WorkHourReportPage(dbController);
-            workHourReportPage.Show();
-        }
     }
 }

@@ -14,6 +14,11 @@ namespace JDI_ReportMaker.Util.PanelComponent
         public abstract StackPanel GetPanel();
         public abstract StackPanel CreatePanel();
 
+        public abstract void AddPanel();
+        public abstract void RemovePanel();
+
+
+
 
         /// <summary>
         /// 設定輸入格的提示

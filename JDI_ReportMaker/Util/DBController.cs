@@ -96,6 +96,15 @@ namespace JDI_ReportMaker
             ExecuteDeleteCmd(sqlstr, paramName, reportDate);
         }
 
+        public void DeleteTestData()
+        {
+            string paramName = "@TargetDate";
+            string sqlStr =
+                "DELETE FROM work_hour " +
+                "WHERE report_date< @TargetDate ";
+            ExecuteDeleteCmd(sqlStr, paramName, "2024-2-16");
+        }
+
         private void ExecuteDeleteCmd(string sqlStr,string paramName,string paramValue)
         {
             using(var command=new SQLiteCommand(sqlStr, connection))

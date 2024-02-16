@@ -39,10 +39,8 @@ namespace JDI_ReportMaker.Util
         /// <returns></returns>
         public bool SourceCheck()
         {
-            try
-            {
-                return inputCheck() && FileCheck();
-            }catch(Exception e) { MessageBox.Show(e.Message); return false; }
+            if(!inputCheck())return false;
+            return FileCheck();
         }
         /// <summary>
         /// 確認員工姓名、編號、來源檔案、目的地是否有輸入
@@ -59,7 +57,7 @@ namespace JDI_ReportMaker.Util
             if (settingCheck) { return true; }
             else
             {
-                MessageBox.Show("請確認資料");
+                MessageBox.Show("請進行設定");
                 return false;
             }
         }
@@ -124,9 +122,12 @@ namespace JDI_ReportMaker.Util
                 {
                     //將面板內容寫入Excel
                     DailyReportWriter dailyReportWriter = new DailyReportWriter(this);
-                    dailyReportWriter.WriteTodayPanel(panels, target);
-                    dailyReportWriter.WriteTomorrowPanel(tomorrowPanels, target);
-                    saveFile(target, targetType);
+                    if (dailyReportWriter.CheckDataRepeat())
+                    {
+                        dailyReportWriter.WriteTodayPanel(panels, target);
+                        dailyReportWriter.WriteTomorrowPanel(tomorrowPanels, target);
+                        saveFile(target, targetType);
+                    }
                 }
 
             }

@@ -22,10 +22,12 @@ namespace JDI_ReportMaker.Util.PanelComponent
         private MainWindow parentWindow;
 
         private Dictionary<string, string>? projectsNameCode;
+        private List<TodayReportPanel> todayPanels;
 
         public TodayReportPanel(MainWindow mainWindow)
         {
             parentWindow = mainWindow;
+            todayPanels = parentWindow.GetTodayPanels();
             //設定專案清單
             SetJobProjectList();
             //創造面板
@@ -119,13 +121,29 @@ namespace JDI_ReportMaker.Util.PanelComponent
         }
         private void AddButton_Clicked(object sender, RoutedEventArgs e)
         {
-            parentWindow.AddTodayPanel();
+            AddPanel();
         }
         private void RemoveButton_Clicked(object sender, RoutedEventArgs e)
         {
-            parentWindow.RemovePanel(this);
+            RemovePanel();
         }
-
+        public override void AddPanel()
+        {
+            if (todayPanels != null && todayPanels.Count < 7)
+            {
+                TodayReportPanel panel = new TodayReportPanel(parentWindow);
+                todayPanels.Add(panel);
+                parentWindow.ShowPanel();
+            }
+        }
+        public override void RemovePanel()
+        {
+            if (todayPanels != null && todayPanels.Count > 1)
+            {
+                todayPanels.Remove(this);
+                parentWindow.ShowPanel();
+            }
+        }
         public string GetPanelNum() { return numLabel.Content.ToString(); }
         public string GetTitle() { return projectTitle.Text; }
         public string GetProjectName() 

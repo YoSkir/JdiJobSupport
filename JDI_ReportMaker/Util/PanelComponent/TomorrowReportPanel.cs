@@ -16,12 +16,15 @@ namespace JDI_ReportMaker.Util.PanelComponent
         private Button? addBtn, removeBtn;
         private MainWindow parentWindow;
 
+        private List<TomorrowReportPanel> tomorrowPanels;
+
         public TomorrowReportPanel(MainWindow mainWindow)
         {
             //創造面板
             CreatePanel();
             //連接主畫面
             parentWindow = mainWindow;
+            tomorrowPanels=parentWindow.GetTomorrowPanels();
         }
         public override StackPanel CreatePanel()
         {
@@ -62,13 +65,31 @@ namespace JDI_ReportMaker.Util.PanelComponent
             }
             else { return CreatePanel(); }
         }
+
+        public override void AddPanel()
+        {
+            if (tomorrowPanels != null && tomorrowPanels.Count < 5)
+            {
+                TomorrowReportPanel panel = new TomorrowReportPanel(parentWindow);
+                tomorrowPanels.Add(panel);
+                parentWindow.ShowPanel();
+            }
+        }
+        public override void RemovePanel()
+        {
+            if (tomorrowPanels != null && tomorrowPanels.Count > 1)
+            {
+                tomorrowPanels.Remove(this);
+                parentWindow.ShowPanel();
+            }
+        }
         private void AddButton_Clicked(object sender, RoutedEventArgs e)
         {
-            parentWindow.AddTomorrowPanel();
+            AddPanel();
         }
         private void RemoveButton_Clicked(object sender, RoutedEventArgs e)
         {
-            parentWindow.RemovePanel(this);
+            RemovePanel();
         }
         /// <summary>
         /// 設定這個欄位的編號，由主視窗顯示時一併設定
