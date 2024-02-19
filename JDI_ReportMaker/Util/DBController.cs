@@ -136,11 +136,14 @@ namespace JDI_ReportMaker
             return GetStrsFromDB(sqlStr);
         }
 
-        public List<string> SelectMonthlyHourSpentByProjectName(string yearMonth,string project)
+        public string SelectMonthlyHourSpentByProjectName(string yearMonth)
         {
             string sqlStr =
-                "SELECT ";
-            return GetStrsFromDB(sqlStr);
+                "SELECT project_code,project_name,SUM(hour_spent) AS hour_spent " +
+                "FROM work_hour " +
+               $"WHERE strftime('%Y-%m',report_date='{yearMonth}' ) " +
+               $"GROUP BY project_name ";
+            return sqlStr;
         }
 
         public SQLiteDataAdapter SelectMonthlyData(string yearMonth)
@@ -151,6 +154,26 @@ namespace JDI_ReportMaker
                 "FROM work_hour " +
                $"WHERE strftime('%Y-%m',report_date)='{yearMonth}' ";
             return new SQLiteDataAdapter(sqlstr, connection);
+        }
+
+        public List<WorkHourComponent> GetProjectsHourSpent(string sqlStr)
+        {
+            List<WorkHourComponent> workHourComponents = new List<WorkHourComponent>();
+            var command = new SQLiteCommand(sqlStr,connection);
+            using(var reader=command.ExecuteReader())
+            {
+                while(reader.Read())
+                {
+                    WorkHourComponent component = new WorkHourComponent
+                    {
+                        project_code = reader["project_code"].ToString(),
+                        project_name = reader["project_name"].ToString(),
+                        hour_spent = Convert.ToInt32(reader["hour_spent"])
+                    };
+                    workHourComponents.Add(component);
+                }
+            }
+            return workHourComponents;
         }
 
         /// <summary>

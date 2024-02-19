@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="工時表" Height="800" Width="1200">
     <Grid>
-        <DataGrid x:Name="DBDataGrid" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="16,38,721,19" AutoGeneratingColumn="DBDataGrid_AutoGeneratingColumn">
+        <DataGrid x:Name="DBDataGrid" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="16,38,532,19" AutoGeneratingColumn="DBDataGrid_AutoGeneratingColumn">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="Background" Value="#FF37371D"/>
@@ -25,7 +25,33 @@
         <Button x:Name="saveWorkHourReportButton" Content="輸出工時表" HorizontalAlignment="Left" Margin="1085,725,0,0" VerticalAlignment="Top" Height="40" Width="84"/>
         <ComboBox x:Name="choseMonthCBox" HorizontalAlignment="Left" Margin="170,7,0,0" VerticalAlignment="Top" Width="120"/>
         <Label Content="請選擇月份(僅保留一年)" HorizontalAlignment="Left" Margin="16,8,0,0" VerticalAlignment="Top" Width="150"/>
-        <StackPanel x:Name="SumaryPanel" Margin="504,38,10,80"/>
+        <StackPanel x:Name="SumaryPanelContainer" Margin="704,38,10,80" Background="#FF595858" Width="486">
+            <StackPanel Height="50" Orientation="Horizontal" Width="486">
+                <StackPanel Width="386" Height="50">
+                    <StackPanel Height="25" Background="#FFBABAAC" Orientation="Horizontal">
+                        <StackPanel Width="150">
+                            <Label Content="專案編號:"/>
+                            <Label Content="Label"/>
+                        </StackPanel>
+                        <StackPanel Width="117">
+                            <Label Content="總工時:"/>
+                            <Label Content="Label"/>
+                        </StackPanel>
+                        <StackPanel Width="117">
+                            <Label Content="工時比例:"/>
+                            <Label Content="Label"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Height="25" Orientation="Horizontal">
+                        <Label Content="專案名稱:"/>
+                        <Label Content="Label"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Width="100" VerticalAlignment="Center">
+                    <CheckBox Content="CheckBox"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
         <Button x:Name="deleteTestData" Content="清除測試資料" HorizontalAlignment="Left" Margin="407,6,0,0" VerticalAlignment="Top" Click="deleteTestData_Click" Visibility="Hidden"/>
 
     </Grid>

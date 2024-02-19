@@ -1,4 +1,5 @@
 ﻿using JDI_ReportMaker.Util;
+using JDI_ReportMaker.Util.PanelComponent;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -22,42 +23,46 @@ namespace JDI_ReportMaker
     /// </summary>
     public partial class WorkHourReportPage : Window
     {
-        private DBController dBController;
+        private DBController? dBController;
+        internal List<SumaryPanel> sumaryPanelList = new List<SumaryPanel>();
 
         public WorkHourReportPage(DBController dBController)
         {
             InitializeComponent();
             this.dBController = dBController;
             SetComboBox();
-            ShowPanelAndDB(DateTime.Now);
-
+            ShowPanelAndDB(DateTime.Now.ToString("yyyy-MM"));
         }
 
-        private void ShowPanelAndDB(DateTime month)
+        private void ShowPanelAndDB(string monthStr)
         {
-            string monthStr = month.ToString("yyyy-MM");
             ShowDatabase(monthStr);
-            //ShowSumaryPanel(monthStr);
+            SumaryPanelInitial(monthStr);
         }
-
-        private void ShowSumaryPanel(string yearMonth)
+        private void SumaryPanelInitial(string yearMonth)
         {
-            using (SQLiteConnection connection = dBController.GetConnection(Const.DatabaseFileName))
+            SetUpPanelList(yearMonth);
+            ShowSumaryPanel();
+        }
+        private void ShowSumaryPanel()
+        {
+            SumaryPanelContainer.Children.Clear();
+            foreach(SumaryPanel panel in sumaryPanelList)
             {
-                string sqlstr = "";
-                sqlstr +=
-                    "SELECT report_date AS '日期', project_code AS '專案編號', project_name AS '專案名稱', hour_spent AS '工時' " +
-                    "FROM work_hour " +
-                   $"WHERE strftime('%Y-%m',report_date)='{yearMonth}' ";
-                using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(sqlstr, connection))
-                {
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
-                    DBDataGrid.ItemsSource = dataTable.DefaultView;
-                }
+                SumaryPanelContainer.Children.Add(panel.GetPanel());
             }
         }
-
+        private void SetUpPanelList(string yearMonth)
+        {
+            string sqlStr = dBController.SelectMonthlyHourSpentByProjectName(yearMonth);
+            List<WorkHourComponent> componentList = dBController.GetProjectsHourSpent(sqlStr);
+            foreach (WorkHourComponent component in componentList)
+            {
+                SumaryPanel panel = new SumaryPanel(this);
+                panel.SetPanelValue(component.project_code, component.project_name, component.hour_spent.ToString());
+                panel.AddPanel();
+            }
+        }
         /// <summary>
         /// combo box的設定
         /// </summary>
@@ -76,7 +81,7 @@ namespace JDI_ReportMaker
         {
             string yearMonth = ComboBoxStrToShowDBStr(choseMonthCBox.Text);
             if(yearMonth.Length > 0)
-            ShowDatabase(yearMonth);
+            ShowPanelAndDB(yearMonth);
         }
         private string ComboBoxStrToShowDBStr(string comboBoxStr)
         {
