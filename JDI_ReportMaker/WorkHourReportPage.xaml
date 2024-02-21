@@ -25,28 +25,35 @@
         <Button x:Name="saveWorkHourReportButton" Content="輸出工時表" HorizontalAlignment="Left" Margin="1085,725,0,0" VerticalAlignment="Top" Height="40" Width="84"/>
         <ComboBox x:Name="choseMonthCBox" HorizontalAlignment="Left" Margin="170,7,0,0" VerticalAlignment="Top" Width="120"/>
         <Label Content="請選擇月份(僅保留一年)" HorizontalAlignment="Left" Margin="16,8,0,0" VerticalAlignment="Top" Width="150"/>
-        <StackPanel x:Name="SumaryPanelContainer" Margin="704,38,10,80" Background="#FF595858" Width="486">
+        <StackPanel x:Name="SumaryPanelContainer" Margin="704,38,10,80" Width="486">
             <StackPanel Height="50" Orientation="Horizontal" Width="486">
+                
                 <StackPanel Width="386" Height="50">
+                    
                     <StackPanel Height="25" Background="#FFBABAAC" Orientation="Horizontal">
+                        
                         <StackPanel Width="150">
                             <Label Content="專案編號:"/>
                             <Label Content="Label"/>
                         </StackPanel>
+                        
                         <StackPanel Width="117">
                             <Label Content="總工時:"/>
                             <Label Content="Label"/>
                         </StackPanel>
+                        
                         <StackPanel Width="117">
                             <Label Content="工時比例:"/>
                             <Label Content="Label"/>
                         </StackPanel>
                     </StackPanel>
+                    
                     <StackPanel Height="25" Orientation="Horizontal">
                         <Label Content="專案名稱:"/>
                         <Label Content="Label"/>
                     </StackPanel>
                 </StackPanel>
+               
                 <StackPanel Width="100" VerticalAlignment="Center">
                     <CheckBox Content="CheckBox"/>
                 </StackPanel>

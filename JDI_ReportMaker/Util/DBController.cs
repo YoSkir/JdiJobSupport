@@ -156,19 +156,19 @@ namespace JDI_ReportMaker
             return new SQLiteDataAdapter(sqlstr, connection);
         }
 
-        public List<WorkHourComponent> GetProjectsHourSpent(string sqlStr)
+        public List<WorkHourEntity> GetProjectsHourSpent(string sqlStr)
         {
-            List<WorkHourComponent> workHourComponents = new List<WorkHourComponent>();
+            List<WorkHourEntity> workHourComponents = new List<WorkHourEntity>();
             var command = new SQLiteCommand(sqlStr,connection);
             using(var reader=command.ExecuteReader())
             {
                 while(reader.Read())
                 {
-                    WorkHourComponent component = new WorkHourComponent
+                    WorkHourEntity component = new WorkHourEntity
                     {
-                        project_code = reader["project_code"].ToString(),
-                        project_name = reader["project_name"].ToString(),
-                        hour_spent = Convert.ToInt32(reader["hour_spent"])
+                        projectCode = reader["project_code"].ToString(),
+                        projectName = reader["project_name"].ToString(),
+                        hourSpent = Convert.ToInt32(reader["hour_spent"])
                     };
                     workHourComponents.Add(component);
                 }
@@ -218,6 +218,5 @@ namespace JDI_ReportMaker
             }
             return result;
         }
-
     }
 }

@@ -55,14 +55,38 @@ namespace JDI_ReportMaker
         private void SetUpPanelList(string yearMonth)
         {
             string sqlStr = dBController.SelectMonthlyHourSpentByProjectName(yearMonth);
-            List<WorkHourComponent> componentList = dBController.GetProjectsHourSpent(sqlStr);
-            foreach (WorkHourComponent component in componentList)
+            List<WorkHourEntity> componentList = dBController.GetProjectsHourSpent(sqlStr);
+            int totalWorkHour = GetTotalWorkHour(componentList);
+            foreach (WorkHourEntity component in componentList)
             {
+                SetWorkPersent(component,totalWorkHour);
                 SumaryPanel panel = new SumaryPanel(this);
-                panel.SetPanelValue(component.project_code, component.project_name, component.hour_spent.ToString());
+                panel.SetPanelValue(component);
                 panel.AddPanel();
             }
         }
+
+        private void SetWorkPersent(WorkHourEntity component, int totalWorkHour)
+        {
+            int hourSpent = component.hourSpent;
+            component.timePersent= 100* hourSpent / totalWorkHour;
+        }
+
+        /// <summary>
+        /// 計算總工時
+        /// </summary>
+        /// <param name="componentList"></param>
+        /// <returns></returns>
+        private int GetTotalWorkHour(List<WorkHourEntity> componentList)
+        {
+            int totalWorkHour = 0;
+            foreach (WorkHourEntity component in componentList)
+            {
+                totalWorkHour += component.hourSpent;
+            }
+            return totalWorkHour;
+        }
+
         /// <summary>
         /// combo box的設定
         /// </summary>
