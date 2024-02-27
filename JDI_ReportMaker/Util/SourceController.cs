@@ -230,7 +230,7 @@ namespace JDI_ReportMaker.Util
                     cellPath[2] = [0, 5, 7]; break;//日期
                 case FileNameEnum.工時表:
                     target = loadFile(defaultSetting.Default.source_path_h);
-                    settingWritter = new WorkHourExcelWritter();
+                    settingWritter = new WorkHourExcelWritter(this);
                     cellPath[0] = [0, 1, 0];//yyyy年mm月工時表
                     cellPath[1] = [0, 2, 0];//填表人:姓名
                     cellPath[2] = [0, 3, 0];//統計期間
@@ -340,6 +340,25 @@ namespace JDI_ReportMaker.Util
         internal DBController GetDBController()
         {
             return dbController;
+        }
+        /// <summary>
+        /// 回傳特定種類報表
+        /// </summary>
+        /// <param name="fileNameEnum"></param>
+        /// <returns></returns>
+        public IWorkbook GetWorkBook(FileNameEnum fileNameEnum)
+        {
+            switch(fileNameEnum)
+            {
+                case FileNameEnum.日報表:
+                    return loadFile(defaultSetting.Default.source_path_d);
+                case FileNameEnum.週報表:
+                    return loadFile(defaultSetting.Default.source_path_w);
+                case FileNameEnum.工時表:
+                    return loadFile(defaultSetting.Default.source_path_h);
+                default:
+                    return null;
+            }
         }
     }
 }

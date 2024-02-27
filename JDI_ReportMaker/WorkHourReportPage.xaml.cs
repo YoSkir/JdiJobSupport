@@ -1,4 +1,5 @@
-﻿using JDI_ReportMaker.Util;
+﻿using JDI_ReportMaker.ExcelWriter;
+using JDI_ReportMaker.Util;
 using JDI_ReportMaker.Util.PanelComponent;
 using System;
 using System.Collections.Generic;
@@ -23,13 +24,15 @@ namespace JDI_ReportMaker
     /// </summary>
     public partial class WorkHourReportPage : Window
     {
-        private DBController? dBController;
+        private DBController dBController;
+        private MainWindow mainWindow;
         internal List<SumaryPanel> sumaryPanelList = new List<SumaryPanel>();
 
-        public WorkHourReportPage(DBController dBController)
+        public WorkHourReportPage(MainWindow mainWindow)
         {
             InitializeComponent();
-            this.dBController = dBController;
+            this.dBController = mainWindow.GetDBController();
+            this.mainWindow = mainWindow;
             SetComboBox();
             ShowPanelAndDB(DateTime.Now.ToString("yyyy-MM"));
         }
@@ -161,6 +164,12 @@ namespace JDI_ReportMaker
         private void deleteTestData_Click(object sender, RoutedEventArgs e)
         {
             dBController.DeleteTestData();
+        }
+
+        private void saveWorkHourReportButton_Click(object sender, RoutedEventArgs e)
+        {
+            WorkHourExcelWritter workHourExcelWritter = new WorkHourExcelWritter(mainWindow.GetSourceController());
+            workHourExcelWritter.WriteExcel();
         }
     }
 }

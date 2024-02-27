@@ -83,7 +83,7 @@ namespace JDI_ReportMaker
         {
             setDate();
             dbController = new DBController();
-            workHourReportPage = new WorkHourReportPage(dbController);
+            workHourReportPage = new WorkHourReportPage(this);
             workHourReportPage.Show();
         }
 
@@ -133,6 +133,14 @@ namespace JDI_ReportMaker
             if(dbController ==null) dbController = new DBController();
             if (sourceController == null) sourceController = new SourceController(dbController);
             return sourceController;
+        }
+        internal DBController GetDBController()
+        {
+            if (dbController==null)
+            {
+                dbController = new DBController();
+            }
+            return dbController;
         }
         /// <summary>
         /// 檢查資料庫是否有重複資料?輸出並儲存日報表:不做任何事
