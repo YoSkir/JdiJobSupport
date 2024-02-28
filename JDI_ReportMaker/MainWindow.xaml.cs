@@ -130,8 +130,7 @@ namespace JDI_ReportMaker
         /// <returns></returns>
         internal SourceController GetSourceController()
         {
-            if(dbController ==null) dbController = new DBController();
-            if (sourceController == null) sourceController = new SourceController(dbController);
+            if (sourceController == null) sourceController = new SourceController(this);
             return sourceController;
         }
         internal DBController GetDBController()
@@ -141,6 +140,11 @@ namespace JDI_ReportMaker
                 dbController = new DBController();
             }
             return dbController;
+        }
+        internal WorkHourReportPage GetWorkHourReportPage()
+        {
+            if(workHourReportPage == null)workHourReportPage=new WorkHourReportPage(this);
+            return workHourReportPage;
         }
         /// <summary>
         /// 檢查資料庫是否有重複資料?輸出並儲存日報表:不做任何事

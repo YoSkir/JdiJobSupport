@@ -14,32 +14,75 @@ namespace JDI_ReportMaker.ExcelWriter
     {
         private IWorkbook workHourWorkBook;
         private SourceController sourceController;
-        private readonly int[][] allSettingCell = { 
+        private MainWindow mainWindow;
+        private readonly int[][] SETTING_CELL = { 
         new int[] {0,1,0 }, //幾年幾月工時表
         new int[] { 0,2,0}, //填表人:伍佑群
         new int[]{0,3,0},//統計期間:
         new int[]{3,1,0 },//填表人:伍佑群
         new int[] {3,2,32 }};//(直接寫入日期無前綴)統計期間
-        public WorkHourExcelWritter(SourceController sourceController)
+        private readonly int SUMARY_SHEET_INDEX = 0;
+        private readonly int WORKHOUR_SHEET_INDEX = 3;
+        private readonly int SUMARY_START_ROW = 6;
+        private readonly int[] SUMARY_CELL = { 0, 1, 2 };
+        private readonly int SUMARY_PROJECT_TEAM_YES_CELL = 4;
+        private readonly int SUMARY_PROJECT_TEAM_NO_CELL = 5;
+
+        public WorkHourExcelWritter(MainWindow mainWindow)
         {
-            this.sourceController = sourceController;
+            this.mainWindow = mainWindow;
+            this.sourceController = mainWindow.GetSourceController();
             workHourWorkBook = sourceController.GetWorkBook(FileNameEnum.工時表);
         }
-        public void WriteExcel()
+        public void WriteExcel(string yearMonth)
         {
             WriteSetting();
+            WriteSumary(yearMonth);
             sourceController.saveFile(workHourWorkBook, FileNameEnum.工時表);
         }
+        /// <summary>
+        /// 將報表統計寫入工時表
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        private void WriteSumary(string yearMonth)
+        {
+            int currentRow = SUMARY_START_ROW;
+            List<WorkHourEntity> workHourList = mainWindow.GetWorkHourReportPage().GetWorkHourEntity(yearMonth);
+            for(int i=0;i<workHourList.Count;i++)
+            {
+                currentRow += i;
+                string[] dataToWrite = GetWorkHourDataStrArr(workHourList[i]);
+                for(int j=0;j<dataToWrite.Length;j++)
+                {
+                    overwriteFile(workHourWorkBook, SUMARY_SHEET_INDEX, currentRow, SUMARY_CELL[j], dataToWrite[j]);
+                }
+            }
+        }
+        /// <summary>
+        /// 從workhour容器獲得一次填入表單的字串陣列
+        /// </summary>
+        /// <param name="workHourEntity"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private string[] GetWorkHourDataStrArr(WorkHourEntity workHourEntity)
+        {
+            string[] dataToWrite = { workHourEntity.projectCode, workHourEntity.projectName, workHourEntity.timePersent.ToString() };
+            return dataToWrite;
+        }
+
         public override void WriteExcel(int[][] cells,IWorkbook target)
         {
 
         }
+        /// <summary>
+        /// 將資料、日期寫入工時表
+        /// </summary>
         private void WriteSetting()
         {
             string[] targetValue = GetCellTargetValueArr();
-            for(int i=0;i<allSettingCell.Length;i++)
+            for(int i=0;i<SETTING_CELL.Length;i++)
             {
-                int[] targetCell = allSettingCell[i];
+                int[] targetCell = SETTING_CELL[i];
                 overwriteFile(workHourWorkBook, targetCell[0], targetCell[1], targetCell[2], targetValue[i]);
             }
         }
@@ -50,7 +93,7 @@ namespace JDI_ReportMaker.ExcelWriter
         /// <exception cref="NotImplementedException"></exception>
         private string[] GetCellTargetValueArr()
         {
-            string[] valueArr=new string[allSettingCell.Length];
+            string[] valueArr=new string[SETTING_CELL.Length];
             string staffName = defaultSetting.Default.staff_name;
             string date = GetYYYMM();
             string dateDuration = GetThisMonthDuration();

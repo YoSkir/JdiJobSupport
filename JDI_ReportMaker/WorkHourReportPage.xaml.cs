@@ -57,16 +57,29 @@ namespace JDI_ReportMaker
         }
         private void SetUpPanelList(string yearMonth)
         {
+            List<WorkHourEntity> componentList = GetWorkHourEntity(yearMonth);
+            foreach (WorkHourEntity component in componentList)
+            {
+                SumaryPanel panel = new SumaryPanel(this);
+                panel.SetPanelValue(component);
+                panel.AddPanel();
+            }
+        }
+        /// <summary>
+        /// 獲得指定年月的工時紀錄列表
+        /// </summary>
+        /// <param name="yearMonth"></param>
+        /// <returns></returns>
+        public List<WorkHourEntity> GetWorkHourEntity(string yearMonth)
+        {
             string sqlStr = dBController.SelectMonthlyHourSpentByProjectName(yearMonth);
             List<WorkHourEntity> componentList = dBController.GetProjectsHourSpent(sqlStr);
             int totalWorkHour = GetTotalWorkHour(componentList);
             foreach (WorkHourEntity component in componentList)
             {
-                SetWorkPersent(component,totalWorkHour);
-                SumaryPanel panel = new SumaryPanel(this);
-                panel.SetPanelValue(component);
-                panel.AddPanel();
+                SetWorkPersent(component, totalWorkHour);
             }
+            return componentList;
         }
 
         private void SetWorkPersent(WorkHourEntity component, int totalWorkHour)
@@ -106,10 +119,24 @@ namespace JDI_ReportMaker
         //選單關閉時的事件
         private void ChoseMonthCBox_DropDownClosed(object? sender, EventArgs e)
         {
-            string yearMonth = ComboBoxStrToShowDBStr(choseMonthCBox.Text);
+            string yearMonth = GetYearMonthFromCurrentComboBox();
             if(yearMonth.Length > 0)
             ShowPanelAndDB(yearMonth);
         }
+        /// <summary>
+        /// 獲得現在選單的年月
+        /// </summary>
+        /// <returns></returns>
+        private string GetYearMonthFromCurrentComboBox()
+        {
+            string yearMonth = ComboBoxStrToShowDBStr(choseMonthCBox.Text);
+            return yearMonth;
+        }
+        /// <summary>
+        /// 將選單的日期文字轉為抓資料的格式
+        /// </summary>
+        /// <param name="comboBoxStr"></param>
+        /// <returns></returns>
         private string ComboBoxStrToShowDBStr(string comboBoxStr)
         {
             return comboBoxStr.Length > 0?comboBoxStr.Replace('年','-').Substring(0,7):"";
@@ -168,8 +195,9 @@ namespace JDI_ReportMaker
 
         private void saveWorkHourReportButton_Click(object sender, RoutedEventArgs e)
         {
-            WorkHourExcelWritter workHourExcelWritter = new WorkHourExcelWritter(mainWindow.GetSourceController());
-            workHourExcelWritter.WriteExcel();
+            WorkHourExcelWritter workHourExcelWritter = new WorkHourExcelWritter(mainWindow);
+            string yearMonth = GetYearMonthFromCurrentComboBox();
+            workHourExcelWritter.WriteExcel(yearMonth);
         }
     }
 }

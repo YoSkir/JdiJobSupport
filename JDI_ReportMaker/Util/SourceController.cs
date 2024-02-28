@@ -26,10 +26,12 @@ namespace JDI_ReportMaker.Util
                                                {"工時表", "工時表 "}};
         private Dictionary<string, string>? projectMap;
         private DBController? dbController;
+        private MainWindow mainWindow;
 
-        public SourceController(DBController dBController)
+        public SourceController(MainWindow mainWindow)
         {
-            this.dbController = dBController;
+            this.mainWindow = mainWindow;
+            this.dbController = mainWindow.GetDBController();
             projectMap=GetJobProjectMap();
         }
 
@@ -230,7 +232,7 @@ namespace JDI_ReportMaker.Util
                     cellPath[2] = [0, 5, 7]; break;//日期
                 case FileNameEnum.工時表:
                     target = loadFile(defaultSetting.Default.source_path_h);
-                    settingWritter = new WorkHourExcelWritter(this);
+                    settingWritter = new WorkHourExcelWritter(mainWindow);
                     cellPath[0] = [0, 1, 0];//yyyy年mm月工時表
                     cellPath[1] = [0, 2, 0];//填表人:姓名
                     cellPath[2] = [0, 3, 0];//統計期間
