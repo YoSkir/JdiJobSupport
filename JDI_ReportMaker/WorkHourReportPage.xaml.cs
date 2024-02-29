@@ -197,7 +197,34 @@ namespace JDI_ReportMaker
         {
             WorkHourExcelWritter workHourExcelWritter = new WorkHourExcelWritter(mainWindow);
             string yearMonth = GetYearMonthFromCurrentComboBox();
-            workHourExcelWritter.WriteExcel(yearMonth);
+            string resultStr;
+            try
+            {
+                workHourExcelWritter.WriteExcel(yearMonth);
+                resultStr = "工時表輸出成功";
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                resultStr = "工時表輸出失敗\n"+ex.Message;
+            }
+            MessageBox.Show(resultStr);
+        }
+        /// <summary>
+        /// 獲得專案負責人選項是否有勾選
+        /// </summary>
+        /// <param name="projectName"></param>
+        /// <returns></returns>
+        internal bool GetProjectInCharge(string? projectName)
+        {
+            foreach(SumaryPanel sumaryPanel in sumaryPanelList)
+            {
+                if (sumaryPanel.GetProjectName().Equals(projectName))
+                {
+                    return sumaryPanel.GetProjectInCharge();
+                }
+            }
+            return false;
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace JDI_ReportMaker.ExcelWriter
 {
@@ -24,9 +25,9 @@ namespace JDI_ReportMaker.ExcelWriter
         private readonly int SUMARY_SHEET_INDEX = 0;
         private readonly int WORKHOUR_SHEET_INDEX = 3;
         private readonly int SUMARY_START_ROW = 6;
-        private readonly int[] SUMARY_CELL = { 0, 1, 2 };
-        private readonly int SUMARY_PROJECT_TEAM_YES_CELL = 4;
-        private readonly int SUMARY_PROJECT_TEAM_NO_CELL = 5;
+        private readonly int[] SUMARY_CELL = { 0, 1, 2 ,4};
+        private readonly string PROJECT_IN_CHARGE_SYMBOL = "X";
+        private readonly int[] TOTAL_WORKHOUR_PERSENT = { 0, 20, 2, 100 };
 
         public WorkHourExcelWritter(MainWindow mainWindow)
         {
@@ -46,18 +47,47 @@ namespace JDI_ReportMaker.ExcelWriter
         /// <exception cref="NotImplementedException"></exception>
         private void WriteSumary(string yearMonth)
         {
-            int currentRow = SUMARY_START_ROW;
             List<WorkHourEntity> workHourList = mainWindow.GetWorkHourReportPage().GetWorkHourEntity(yearMonth);
             for(int i=0;i<workHourList.Count;i++)
             {
-                currentRow += i;
-                string[] dataToWrite = GetWorkHourDataStrArr(workHourList[i]);
-                for(int j=0;j<dataToWrite.Length;j++)
+                WriteOneSumary(workHourList[i], i);
+            }
+            WriteTotalPersent();
+        }
+        /// <summary>
+        /// 寫入總計時間比例
+        /// </summary>
+        private void WriteTotalPersent()
+        {
+            int sheet = TOTAL_WORKHOUR_PERSENT[0];
+            int row = TOTAL_WORKHOUR_PERSENT[1];
+            int cell = TOTAL_WORKHOUR_PERSENT[2];
+            string value = TOTAL_WORKHOUR_PERSENT[3].ToString() + "%";
+            overwriteFile(workHourWorkBook, sheet, row, cell, value);
+        }
+
+        /// <summary>
+        /// 寫入一個統計面板
+        /// </summary>
+        /// <param name="workHourEntity"></param>
+        /// <param name="currentIndex"></param>
+        private void WriteOneSumary(WorkHourEntity workHourEntity, int currentIndex)
+        {
+            bool projectInCharge = mainWindow.GetWorkHourReportPage().GetProjectInCharge(workHourEntity.projectName);
+            int currentRow = SUMARY_START_ROW + currentIndex;
+            string[] dataToWrite = GetWorkHourDataStrArr(workHourEntity);
+            for (int j = 0; j < dataToWrite.Length; j++)
+            {
+                //如果有勾選專案負責人，則cell index維持4，否則+1
+                int projectInChargeAddOneIndex = 0;
+                if (j == dataToWrite.Length - 1 && !projectInCharge)
                 {
-                    overwriteFile(workHourWorkBook, SUMARY_SHEET_INDEX, currentRow, SUMARY_CELL[j], dataToWrite[j]);
+                    projectInChargeAddOneIndex = 1;
                 }
+                overwriteFile(workHourWorkBook, SUMARY_SHEET_INDEX, currentRow, SUMARY_CELL[j] + projectInChargeAddOneIndex, dataToWrite[j]);
             }
         }
+
         /// <summary>
         /// 從workhour容器獲得一次填入表單的字串陣列
         /// </summary>
@@ -66,7 +96,8 @@ namespace JDI_ReportMaker.ExcelWriter
         /// <exception cref="NotImplementedException"></exception>
         private string[] GetWorkHourDataStrArr(WorkHourEntity workHourEntity)
         {
-            string[] dataToWrite = { workHourEntity.projectCode, workHourEntity.projectName, workHourEntity.timePersent.ToString() };
+            string[] dataToWrite = { workHourEntity.projectCode, workHourEntity.projectName, 
+                workHourEntity.timePersent.ToString()+"%",PROJECT_IN_CHARGE_SYMBOL};
             return dataToWrite;
         }
 

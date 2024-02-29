@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JDI_ReportMaker.Util.PanelComponent;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,6 @@ namespace JDI_ReportMaker.Util
         public int hourSpent { get; set; }
         public int timePersent { get; set; }
         public bool managerOrTeam { get; set; }
+
     }
 }

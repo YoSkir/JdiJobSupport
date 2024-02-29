@@ -59,7 +59,7 @@ namespace JDI_ReportMaker.Util.PanelComponent
             projectName.Content = panelEntity.projectName;
             projectCode.Content=panelEntity.projectCode;
             hourSpent.Content=panelEntity.hourSpent;
-            timePersent.Content=panelEntity.timePersent;
+            timePersent.Content=panelEntity.timePersent+"%";
         }
         private void secondLayerPanel(StackPanel parentPanel)
         {
@@ -119,6 +119,16 @@ namespace JDI_ReportMaker.Util.PanelComponent
         public override void RemovePanel()
         {
             sumaryPanelList.Remove(this);
+        }
+
+        public string GetProjectName()
+        {
+            return projectName.Content.ToString();
+        }
+
+        public bool GetProjectInCharge()
+        {
+            return projectTeamOrManager.IsChecked==true;
         }
     }
 }
