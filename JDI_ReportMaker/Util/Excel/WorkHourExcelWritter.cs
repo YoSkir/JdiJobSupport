@@ -23,11 +23,16 @@ namespace JDI_ReportMaker.ExcelWriter
         new int[]{3,1,0 },//填表人:伍佑群
         new int[] {3,2,32 }};//(直接寫入日期無前綴)統計期間
         private readonly int SUMARY_SHEET_INDEX = 0;
-        private readonly int WORKHOUR_SHEET_INDEX = 3;
         private readonly int SUMARY_START_ROW = 6;
         private readonly int[] SUMARY_CELL = { 0, 1, 2 ,4};
         private readonly string PROJECT_IN_CHARGE_SYMBOL = "X";
         private readonly int[] TOTAL_WORKHOUR_PERSENT = { 0, 20, 2, 100 };
+        private readonly int RECORD_START_ROW = 6;
+        private readonly int RECORD_START_CELL = 2;
+        private readonly int RECORD_SHEET_INDEX = 3;
+        private readonly int RECORD_DATE_ROW = 4;
+        private readonly int[] RECORD_PROJECT_CODE_NAME_CELL = { 0, 1 };
+
 
         public WorkHourExcelWritter(MainWindow mainWindow)
         {
@@ -37,10 +42,102 @@ namespace JDI_ReportMaker.ExcelWriter
         }
         public void WriteExcel(string yearMonth)
         {
-            WriteSetting();
+            WriteSetting(yearMonth);
             WriteSumary(yearMonth);
-            sourceController.saveFile(workHourWorkBook, FileNameEnum.工時表);
+            WriteRecord(yearMonth);
+            SaveWorkHourFile(yearMonth);
         }
+
+        private void SaveWorkHourFile(string yearMonth)
+        {
+            string fileNameDate = GetFileNameDate(yearMonth);
+            workHourWorkBook.GetSheetAt(RECORD_SHEET_INDEX).ForceFormulaRecalculation = true;
+            sourceController.saveFile(workHourWorkBook, FileNameEnum.工時表, fileNameDate);
+        }
+
+        private string GetFileNameDate(string yearMonth)
+        {
+            string[] dateSplit = yearMonth.Split('-');
+            return dateSplit[1] + "月";
+        }
+
+        private void WriteRecord(string yearMonth)
+        {        
+            Dictionary<string,int> projectName_rowIndex=new Dictionary<string,int>();
+            Dictionary<string, int> date_cellIndex = new Dictionary<string, int>();
+            List<WorkHourEntity> recordList = mainWindow.GetDBController().GetProjectRecordList(yearMonth);
+            foreach(WorkHourEntity record in recordList)
+            {
+                int rowIndex = GetRowIndex(projectName_rowIndex, record);
+                int cellIndex = GetCellIndex(date_cellIndex,record.recordDate);
+                WriteOneRecord(rowIndex, cellIndex, record.hourSpent);
+            }
+        }
+
+        private void WriteOneRecord(int rowIndex, int currentCellIndex, int hourSpent)
+        {
+            overwriteFile(workHourWorkBook, RECORD_SHEET_INDEX, rowIndex, currentCellIndex, hourSpent);
+        }
+
+        private int GetCellIndex(Dictionary<string,int> date_cellIndex,string recordDate)
+        {
+            recordDate = GetRecordFormatDate(recordDate);
+            if (date_cellIndex.ContainsKey(recordDate))
+            {
+                return date_cellIndex[recordDate];
+            }
+            else
+            {
+                int cellIndex = RECORD_START_CELL + date_cellIndex.Count * 2;
+                date_cellIndex.Add(recordDate, cellIndex);
+                WriteRecordDate(cellIndex, recordDate);
+                return cellIndex;
+            }
+        }
+
+        private void WriteRecordDate(int currentCellIndex, string currentDate)
+        {
+            overwriteFile(workHourWorkBook,RECORD_SHEET_INDEX,RECORD_DATE_ROW,currentCellIndex,currentDate);
+        }
+
+        private string GetRecordFormatDate(string? recordDate)
+        {
+            string[] dateSplit = recordDate.Split(['/',' ']);
+            string taiwanYear = GetTaiwanYear(dateSplit[0]);
+            string result = taiwanYear + "/" + dateSplit[1] + "/" + dateSplit[2];
+            return result;
+        }
+
+        private int GetRowIndex(Dictionary<string, int> projectName_rowIndex, WorkHourEntity record)
+        {
+            string projectName = record.projectName;
+            if (projectName_rowIndex.ContainsKey(projectName))
+            {
+                return projectName_rowIndex[projectName];
+            }
+            else
+            {
+                int rowIndex = RECORD_START_ROW + projectName_rowIndex.Count;
+                projectName_rowIndex.Add(projectName, rowIndex);
+                WriteProjectCodeName(rowIndex, record);
+                return rowIndex;
+            }
+        }
+        /// <summary>
+        /// 將專案編號、名稱寫入紀錄表
+        /// </summary>
+        /// <param name="rowIndex"></param>
+        /// <param name="record"></param>
+        private void WriteProjectCodeName(int rowIndex, WorkHourEntity record)
+        {
+            string[] projectInfo = { record.projectCode, record.projectName };
+            for(int i = 0; i < 2; i++)
+            {
+                overwriteFile(workHourWorkBook, RECORD_SHEET_INDEX, rowIndex, RECORD_PROJECT_CODE_NAME_CELL[i], projectInfo[i]);
+            }
+        }
+
+
         /// <summary>
         /// 將報表統計寫入工時表
         /// </summary>
@@ -108,9 +205,9 @@ namespace JDI_ReportMaker.ExcelWriter
         /// <summary>
         /// 將資料、日期寫入工時表
         /// </summary>
-        private void WriteSetting()
+        private void WriteSetting(string yearMonth)
         {
-            string[] targetValue = GetCellTargetValueArr();
+            string[] targetValue = GetCellTargetValueArr(yearMonth);
             for(int i=0;i<SETTING_CELL.Length;i++)
             {
                 int[] targetCell = SETTING_CELL[i];
@@ -122,12 +219,12 @@ namespace JDI_ReportMaker.ExcelWriter
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        private string[] GetCellTargetValueArr()
+        private string[] GetCellTargetValueArr(string yearMonth)
         {
             string[] valueArr=new string[SETTING_CELL.Length];
             string staffName = defaultSetting.Default.staff_name;
-            string date = GetYYYMM();
-            string dateDuration = GetThisMonthDuration();
+            string date = GetYYYMM(yearMonth);
+            string dateDuration = GetThisMonthDuration(yearMonth);
 
             valueArr[0] = date+"工時表";
             valueArr[1] = "填表人: " + staffName;
@@ -141,9 +238,9 @@ namespace JDI_ReportMaker.ExcelWriter
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        private string GetThisMonthDuration()
+        private string GetThisMonthDuration(string yearMonth)
         {
-            string[] datePart = defaultSetting.Default.date.Split('-');
+            string[] datePart = yearMonth.Split('-');
             string year = GetTaiwanYear(datePart[0]);
             string month = datePart[1];
             string lastDay = GetLastDayOfMonth(datePart[0],month);
@@ -171,9 +268,9 @@ namespace JDI_ReportMaker.ExcelWriter
         /// 將緩存之日期轉為xxx年xx月
         /// </summary>
         /// <returns></returns>
-        private string GetYYYMM()
+        private string GetYYYMM(string yearMonth)
         {
-            string[] datePart = defaultSetting.Default.date.Split('-');
+            string[] datePart = yearMonth.Split('-');
             string year = GetTaiwanYear(datePart[0]);
             string month = datePart[1];
             return  year+ "年" + month+"月";

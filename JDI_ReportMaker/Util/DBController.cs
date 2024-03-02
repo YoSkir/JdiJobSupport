@@ -141,19 +141,60 @@ namespace JDI_ReportMaker
             string sqlStr =
                 "SELECT project_code,project_name,SUM(hour_spent) AS hour_spent " +
                 "FROM work_hour " +
-               $"WHERE strftime('%Y-%m',report_date='{yearMonth}' ) " +
+               $"WHERE strftime('%Y-%m',report_date)='{yearMonth}' " +
                $"GROUP BY project_name ";
             return sqlStr;
         }
-
+        /// <summary>
+        /// 獲得顯示在面板上的特定月份專案工時紀錄
+        /// </summary>
+        /// <param name="yearMonth"></param>
+        /// <returns></returns>
         public SQLiteDataAdapter SelectMonthlyData(string yearMonth)
+        {
+            string sqlStr=GetProjectRecordListSqlStr(yearMonth);
+            return new SQLiteDataAdapter(sqlStr, connection);
+        }
+        /// <summary>
+        /// 獲得專案紀錄的容器list
+        /// </summary>
+        /// <param name="yearMonth"></param>
+        /// <returns></returns>
+        public List<WorkHourEntity> GetProjectRecordList(string yearMonth)
+        {
+            string sqlStr = GetProjectRecordListSqlStr(yearMonth);
+            List<WorkHourEntity> recordList= new List<WorkHourEntity>();
+            var command = new SQLiteCommand(sqlStr, connection);
+            using(var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    WorkHourEntity entity = new WorkHourEntity
+                    {
+                        projectCode = reader["專案編號"].ToString(),
+                        projectName = reader["專案名稱"].ToString(),
+                        recordDate = reader["日期"].ToString(),
+                        hourSpent = Convert.ToInt32(reader["工時"])
+                    };
+                    recordList.Add(entity);
+                }
+            }
+            return recordList;
+        }
+        /// <summary>
+        /// 獲得專案紀錄的sql語法字串
+        /// </summary>
+        /// <param name="yearMonth"></param>
+        /// <returns></returns>
+        private string GetProjectRecordListSqlStr(string yearMonth)
         {
             string sqlstr = "";
             sqlstr +=
                 "SELECT report_date AS '日期', project_code AS '專案編號', project_name AS '專案名稱', hour_spent AS '工時' " +
                 "FROM work_hour " +
-               $"WHERE strftime('%Y-%m',report_date)='{yearMonth}' ";
-            return new SQLiteDataAdapter(sqlstr, connection);
+               $"WHERE strftime('%Y-%m',report_date)='{yearMonth}' " +
+               $"ORDER BY report_date ";
+            return sqlstr;
         }
 
         public List<WorkHourEntity> GetProjectsHourSpent(string sqlStr)

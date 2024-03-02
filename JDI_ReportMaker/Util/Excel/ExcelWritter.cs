@@ -48,6 +48,29 @@ namespace JDI_ReportMaker.ExcelWriter
                 MessageBox.Show(e.Message);
             }
         }
+        public void overwriteFile(IWorkbook target, int sheet, int row, int cell, int value)
+        {
+            try
+            {
+                ISheet isheet = target.GetSheetAt(sheet);
+                if (isheet != null)
+                {
+                    IRow irow = isheet.GetRow(row);
+                    if (irow != null)
+                    {
+                        ICell icell = irow.GetCell(cell);
+                        if (icell != null)
+                        {
+                            icell.SetCellValue(value);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
         /// <summary>
         /// 檔案資料單格寫入(不取代原有內容)
         /// </summary>
