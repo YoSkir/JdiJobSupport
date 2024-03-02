@@ -179,10 +179,10 @@ namespace JDI_ReportMaker
                 if (sourceController.SourceCheck())
                 {
                     SetThisWeekArr();
-                    IWorkbook target = sourceController.staffDataWrite(FileNameEnum.週報表);
+                    IWorkbook target = sourceController.staffDataWrite(fileType);
                     DrawCalender(target);
                     WritePanelToExcel(target);
-                    sourceController.saveFile(target, fileType);
+                    SaveWeeklyReport(target);
                     MessageBox.Show("儲存成功");
                     this.Close();
                 }
@@ -190,6 +190,14 @@ namespace JDI_ReportMaker
             catch { MessageBox.Show("儲存失敗"); }
 
         }
+
+        private void SaveWeeklyReport(IWorkbook target)
+        {
+            string[] weekName = weekCbox.Text.Split(' ');
+            string fileNameDate = weekName[weekName.Length - 1];
+            sourceController.saveFile(target, FileNameEnum.週報表,fileNameDate);
+        }
+
         /// <summary>
         /// 將面板內容寫入報表
         /// </summary>

@@ -128,13 +128,15 @@ namespace JDI_ReportMaker.Util
                     {
                         dailyReportWriter.WriteTodayPanel(panels, target);
                         dailyReportWriter.WriteTomorrowPanel(tomorrowPanels, target);
-                        saveFile(target, targetType);
+                        string fileNameDate = defaultSetting.Default.date;
+                        saveFile(target, targetType,fileNameDate);
                     }
                 }
 
             }
             catch { throw; }
         }
+
 
         /// <summary>
         /// 檢查面板內容並彈出提醒視窗
@@ -276,10 +278,10 @@ namespace JDI_ReportMaker.Util
         /// </summary>
         /// <param name="sourceWorkbook">原檔</param>
         /// <param name="targerFilePath">另存檔案的位置與名稱</param>
-        internal void saveFile(IWorkbook sourceWorkbook, FileNameEnum fileNameEnum)
+        internal void saveFile(IWorkbook sourceWorkbook, FileNameEnum fileNameEnum,string fileNameDate)
         {
             //設定檔名:報表名+員工名+日期
-            string? date = defaultSetting.Default.date;
+            string? date = fileNameDate;
             string fileNameStr = "/" + fileName[fileNameEnum.ToString()] +
                 " " + defaultSetting.Default.staff_name +
                 " " + date + ".xls";
@@ -296,6 +298,7 @@ namespace JDI_ReportMaker.Util
                 throw;
             }
         }
+
         /// <summary>
         /// 獲取工時表的專案清單<名稱,編號>
         /// </summary>

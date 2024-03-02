@@ -9,6 +9,7 @@ namespace JDI_ReportMaker.Util
 {
     public class WorkHourEntity
     {
+        public string? recordDate {  get; set; }
         public string? projectCode { get; set; }
         public string? projectName { get; set;}
         public int hourSpent { get; set; }

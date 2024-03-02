@@ -44,6 +44,7 @@ namespace JDI_ReportMaker
         }
         private void SumaryPanelInitial(string yearMonth)
         {
+            sumaryPanelList.Clear();
             SetUpPanelList(yearMonth);
             ShowSumaryPanel();
         }
@@ -145,6 +146,7 @@ namespace JDI_ReportMaker
         private void SetComboBoxList(List<string> list)
         {
             choseMonthCBox.ItemsSource=list;
+            choseMonthCBox.Text = list[list.Count - 1];
         }
         //獲得下拉選單內容
         private List<string> GetMonthListFromDB()
