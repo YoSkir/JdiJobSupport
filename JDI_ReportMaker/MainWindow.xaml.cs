@@ -273,5 +273,9 @@ namespace JDI_ReportMaker
             InitialPanel();
         }
 
+        private void deleteTodayDataButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

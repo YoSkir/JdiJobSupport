@@ -15,7 +15,7 @@
         <Button x:Name="todayButton" Content="重置日期為今天" HorizontalAlignment="Left" Margin="234,15,0,0" VerticalAlignment="Top" Click="todayButton_Click" Width="89"/>
         <CheckBox x:Name="godModeCheckBox" Content="無視檔案異常" Margin="418,667,554,84" Visibility="Hidden" Grid.Column="2"/>
         <Button x:Name="cleanDefaultButton" Content="清空預設設定" HorizontalAlignment="Left" Margin="952,667,0,0" VerticalAlignment="Top" Click="cleanDefaultButton_Click" Visibility="Hidden" Grid.Column="2"/>
-        <Button x:Name="resetPanel" Content="面板異常" HorizontalAlignment="Left" Margin="1038,19,0,0" VerticalAlignment="Top" Width="72" Click="resetPanel_Click" Grid.Column="2"/>
+        <Button x:Name="resetPanel" Content="面板異常" HorizontalAlignment="Left" Margin="1038,19,0,0" VerticalAlignment="Top" Width="72" Click="resetPanel_Click" Grid.Column="2" Visibility="Hidden"/>
         <StackPanel x:Name="todayJobPanel" Grid.ColumnSpan="3" Margin="70,51,34,393">
             <StackPanel x:Name="todayReportContainer" Orientation="Horizontal" Visibility="Hidden">
                 <Label x:Name="panelNumLabel" Content="1"/>
@@ -35,5 +35,6 @@
         <Label Content="明&#xA;日&#xA;工&#xA;作&#xA;計&#xA;劃" Grid.ColumnSpan="2" Margin="10,392,0,0" Height="262" Width="60" Background="{x:Null}" FontSize="28" VerticalAlignment="Top" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Padding="5,30,5,5"/>
         <Button x:Name="weeklyReportSheet" Content="週報表" HorizontalAlignment="Left" Margin="1038,471,0,0" VerticalAlignment="Top" Width="72" Click="weeklyReportSheet_Click"/>
         <Button x:Name="workHourSheet" Content="工時表" HorizontalAlignment="Left" Margin="1038,530,0,0" VerticalAlignment="Top" Width="72" Click="workHourSheet_Click"/>
+        <Button x:Name="deleteTodayDataButton" Content="刪除今日資料" HorizontalAlignment="Left" Margin="1179,413,0,0" VerticalAlignment="Top" Width="72" Click="deleteTodayDataButton_Click"/>
     </Grid>
 </Controls:MetroWindow>
