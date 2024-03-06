@@ -1,4 +1,4 @@
-# JdiJobSupport 0.4.0 <br>
+# JdiJobSupport 1.0.1 <br>
 輔助工作製作報表、一鍵打卡的小程式。<br><br>   
 程式語言: C#<br>
 框架:WPF<br>
@@ -14,7 +14,7 @@ https://github.com/YoSkir/JdiJobSupport/releases/tag/JJSv0.4.0 <br>
 <br>
 <br>
 !!已知bug:<br>
--第一次開啟會報路徑錯誤<br>
++已修正+第一次開啟會報路徑錯誤<br>
 -無法刪除資料庫紀錄<br>
 -如果日報表沒選擇專案名稱，會記錄"請選擇專案名稱"至資料庫<br>
 -每月第一天會讓周報表周間變下一批<br>
@@ -31,7 +31,6 @@ https://github.com/YoSkir/JdiJobSupport/releases/tag/JJSv0.4.0 <br>
 1.使用VisualStudio或VS code打開專案並運行MainWindow.xaml.cs<br>
 <br>
 設定方法:<br>
-第一次開啟請無視錯誤訊息<br>
 設定輸入姓名、部門、三種報表的位置(三種都必須選取才能使用)、目標位置並儲存<br>
 日報表的下拉選單是抓選擇的工時表專案內容，所以工時表必須每月重新選擇<br>
 <br>
@@ -58,6 +57,7 @@ https://github.com/YoSkir/JdiJobSupport/releases/tag/JJSv0.4.0 <br>
 <br>
 <br>
 版本紀錄:<br>
+1.0.1 2024/03/06 修正設定未完成的異常狀態<br>
 0.4.0 2024/03/03 工時表輸出功能完成<br>
 0.3.8 2024/02/29 工時表第一頁輸出<br>
 0.3.7 2024/02/27 工時表設定輸出<br>

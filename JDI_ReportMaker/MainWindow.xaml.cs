@@ -96,15 +96,51 @@ namespace JDI_ReportMaker
         {
             GetSourceController();
             //判斷設定異常時打開設定視窗 否則初始化日報表面板
+            //改成設定部完成一樣能打開，但功能封鎖
             if (!sourceController.SourceCheck())
             {
-                OpenSettingWindow();
+                LockFunction();
+                //OpenSettingWindow();
             }
             else
             {
                 InitialPanel();
             }
         }
+        /// <summary>
+        /// 將部分功能關閉以避免錯誤操作
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        private void LockFunction()
+        {
+            clearPanel();
+            settingLabel.Content = "請進行設定";
+            saveFileButton.IsEnabled = false;
+            deleteTodayDataButton.IsEnabled = false;
+            todayButton.IsEnabled = false;
+            weeklyReportPageButton.IsEnabled = false;
+            workHourPageButton.IsEnabled = false;
+            datePicker.IsEnabled = false;
+        }
+
+        private void clearPanel()
+        {
+            todayPanels.Clear();
+            tomorrowPanels.Clear();
+            ShowPanel();
+        }
+
+        private void unlockFunction()
+        {
+            settingLabel.Content = "";
+            saveFileButton.IsEnabled = true;
+            deleteTodayDataButton.IsEnabled = true;
+            todayButton.IsEnabled = true;
+            weeklyReportPageButton.IsEnabled = true;
+            workHourPageButton.IsEnabled = true;
+            datePicker.IsEnabled=true;
+        }
+
         /// <summary>
         /// 初始化日報表面板
         /// </summary>
@@ -203,13 +239,13 @@ namespace JDI_ReportMaker
         private void OpenSettingWindow()
         {
             SettingWindow settingWindow = new SettingWindow();
-            //設定需要檔案與設定正常才能關閉
+            //設定視窗關閉時檢查設定失敗則鎖定功能，成功則解除鎖定
             settingWindow.Closing += SettingWindow_Closing;
             //settingWindow.Owner = this;
             settingWindow.ShowDialog();
         }
         /// <summary>
-        /// 設定未完成時無法關閉設定視窗
+        /// 關閉視窗後檢查設定並判斷功能
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -218,10 +254,11 @@ namespace JDI_ReportMaker
             if (sourceController == null) GetSourceController();
             if (!sourceController.SourceCheck())
             {
-                e.Cancel = true;
+                LockFunction();
             }
             else
             {
+                unlockFunction();
                 InitialPanel();
             }
         }

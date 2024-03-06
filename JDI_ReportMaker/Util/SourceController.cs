@@ -59,7 +59,7 @@ namespace JDI_ReportMaker.Util
             if (settingCheck) { return true; }
             else
             {
-                MessageBox.Show("請進行設定");
+                //MessageBox.Show("請進行設定");
                 return false;
             }
         }
@@ -72,35 +72,35 @@ namespace JDI_ReportMaker.Util
             IWorkbook target;
             if (!File.Exists(defaultSetting.Default.source_path_d))
             {
-                MessageBox.Show("日報表檔案遺失");
+                //MessageBox.Show("日報表檔案遺失");
                 return false;
             }
             if (!File.Exists(defaultSetting.Default.source_path_w))
             {
-                MessageBox.Show("週報表檔案遺失");
+                //MessageBox.Show("週報表檔案遺失");
                 return false;
             }
             if (!File.Exists(defaultSetting.Default.source_path_h))
             {
-                MessageBox.Show("工時表檔案遺失");
+                //MessageBox.Show("工時表檔案遺失");
                 return false;
             }
             target = loadFile(defaultSetting.Default.source_path_d);
             if (target==null||target.GetSheetName(0) != "日報表")
             {
-                MessageBox.Show(target==null?"請關閉所有報表":"日報表檔案異常");
+                //MessageBox.Show(target==null?"請關閉所有報表":"日報表檔案異常");
                 return false;
             }
             target = loadFile(defaultSetting.Default.source_path_w);
             if (target == null || target.GetSheetName(0) != "週報表")
             {
-                MessageBox.Show(target == null ? "請關閉所有報表" : "日報表檔案異常");
+                //MessageBox.Show(target == null ? "請關閉所有報表" : "日報表檔案異常");
                 return false;
             }
             target = loadFile(defaultSetting.Default.source_path_h);
             if (target == null || target.GetSheetName(0) != "工時表")
             {
-                MessageBox.Show(target == null ? "請關閉所有報表" : "日報表檔案異常");
+                //MessageBox.Show(target == null ? "請關閉所有報表" : "日報表檔案異常");
                 return false;
             }
             return true;

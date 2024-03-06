@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="JDI_ReportMaker.Util.Setting" GeneratedClassName="defaultSetting">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="JDI_ReportMaker" GeneratedClassName="defaultSetting">
   <Profiles />
   <Settings>
     <Setting Name="staff_name" Type="System.String" Scope="User">
