@@ -50,13 +50,13 @@ namespace JDI_ReportMaker
         {
             weekCbox.IsEditable = true;
             weekCbox.Text = "請選擇期間(默認本週)";
-            weekCbox.ItemsSource=GetWeekList();
+            weekCbox.ItemsSource=GetWeekList(thisYear,thisMonth);
         }
         /// <summary>
         /// 獲得下拉選單要用的本月每個週間
         /// </summary>
         /// <returns></returns>
-        private List<string> GetWeekList()
+        private List<string> GetWeekList(int thisYear, int thisMonth)
         {
             List<string> weekList = new List<string>();
 

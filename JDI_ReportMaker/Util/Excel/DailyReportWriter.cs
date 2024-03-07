@@ -77,47 +77,11 @@ namespace JDI_ReportMaker.Util.ExcelWriter
                     }
                     //寫入說明
                     panelRow.GetCell(7).SetCellValue(panel.GetDescribtion());
-                    WriteWorkHourDB(panel);
+                    //WriteWorkHourDB(panel);
                 }
             }catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
-        public bool CheckDataRepeat()
-        {
-            //確認資料出現重複日期 並且確定覆蓋後 寫入工時表資料庫
-            bool replaceOldData = true;
-            string targetDate = defaultSetting.Default.date;
-            if (DayDataRepeat(targetDate))
-            {
-                replaceOldData = controller.WarningBox($"資料庫中已有{targetDate}的資料，繼續執行將刪除原有資料\n");
-                if (replaceOldData)
-                {
-                    dBController.DeleteTargetDateReport(targetDate);
-                    return true;
-                }
-                else { return false; }
-            }
-            return true;
-        }
 
-        private bool DayDataRepeat(string date)
-        {
-            List<string> list= dBController.SelectExistDateData(date);
-            return list.Count>0?true:false;
-
-        }
-
-        /// <summary>
-        /// 將欄位資料寫入工時表資料庫
-        /// </summary>
-        /// <param name="todayReportPanel"></param>
-        private void WriteWorkHourDB(TodayReportPanel todayReportPanel)
-        {
-            string projectName = todayReportPanel.GetProjectName();
-            string projectCode = todayReportPanel.GetProjectCode();
-            string hourSpend = todayReportPanel.GetWorkHour();
-            string reportTime = defaultSetting.Default.date;
-            dBController.InsertWorkHour(reportTime, projectCode, projectName, hourSpend);
-        }
 
         public void WriteTomorrowPanel(List<TomorrowReportPanel> panels,IWorkbook target)
         {

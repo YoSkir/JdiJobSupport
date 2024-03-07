@@ -159,10 +159,6 @@ namespace JDI_ReportMaker.Util.PanelComponent
         public string GetDescribtion() { return projectDescription.Text; }
         public string GetWorkHour()
         {
-            if(hourSpent.Text.Length == 0)
-            {
-                return "0";
-            }
             return hourSpent.Text;
         }
         public bool GetDone() { return doneCheck.IsChecked == true; }

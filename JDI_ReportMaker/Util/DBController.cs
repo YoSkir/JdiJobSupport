@@ -49,12 +49,12 @@ namespace JDI_ReportMaker
             {
                 connection.Close();
             }
-        } 
+        }
 
         private void CreateTable()
         {
             string sqlStr = "";
-            sqlStr += 
+            sqlStr +=
                 "CREATE TABLE IF NOT EXISTS work_hour " +
                 "(" +
                 "report_date DATETIME NOT NULL," +
@@ -62,7 +62,68 @@ namespace JDI_ReportMaker
                 "project_name VARCHAR(100), " +
                 "hour_spent TINYINT(5) " +
                 "); ";
-            SQLiteCommand cmd = new SQLiteCommand(sqlStr,connection);
+            SQLiteCommand cmd = new SQLiteCommand(sqlStr, connection);
+            cmd.ExecuteNonQuery();
+        }
+        /// <summary>
+        /// 創建儲存日報表的Table
+        /// </summary>
+        private void CreateDailyReportTable()
+        {
+            string sqlStr = "";
+            sqlStr +=
+                "CREATE TABLE IF NOT EXISTS daily_report " +
+                "(" +
+                "report_date DATETIME NOT NULL," +
+                "project_name VARCHAR(100), " +
+                "project_title VARCHAR(100) " +
+                "project_describe VARCHAR(100) "+
+                "hour_spent TINYINT(5) " +
+                "jobDone bool " +
+                "); ";
+            SQLiteCommand cmd = new SQLiteCommand(sqlStr, connection);
+            cmd.ExecuteNonQuery();
+        }
+        /// <summary>
+        /// 創建儲存周報表的Table
+        /// </summary>
+        private void CreateWeekReportTable()
+        {
+            string sqlStr = "";
+            sqlStr +=
+                "CREATE TABLE IF NOT EXISTS week_report " +
+                "(" +
+                "year tinyint(8), " +
+                "month tinyint(4) " +
+                "mon_title1 VARCHAR(100) " +
+                "mon_title2 VARCHAR(100) " +
+                "mon_discr1 VARCHAR(100) " +
+                "mon_discr2 VARCHAR(100) " +
+
+                "tue_title1 VARCHAR(100) " +
+                "tue_title2 VARCHAR(100) " +
+                "tue_discr1 VARCHAR(100) " +
+                "tue_discr2 VARCHAR(100) " +
+
+                "wed_title1 VARCHAR(100) " +
+                "wed_title2 VARCHAR(100) " +
+                "wed_discr1 VARCHAR(100) " +
+                "wed_discr2 VARCHAR(100) " +
+
+                "thr_title1 VARCHAR(100) " +
+                "thr_title2 VARCHAR(100) " +
+                "thr_discr1 VARCHAR(100) " +
+                "thr_discr2 VARCHAR(100) " +
+
+                "fri_title1 VARCHAR(100) " +
+                "fri_title2 VARCHAR(100) " +
+                "fri_discr1 VARCHAR(100) " +
+                "fri_discr2 VARCHAR(100) " +
+
+                "sat_title1 VARCHAR(100) " +
+                "sat_title2 VARCHAR(100) " +
+                "); ";
+            SQLiteCommand cmd = new SQLiteCommand(sqlStr, connection);
             cmd.ExecuteNonQuery();
         }
 
@@ -77,6 +138,14 @@ namespace JDI_ReportMaker
             cmd.ExecuteNonQuery();
         }
 
+        public List<String> SelectWorkHourReport()
+        {
+            string sqlstr =
+                "SELECT project_name " +
+                "FROM work_hour ";
+            List<string> list = GetStrsFromDB(sqlstr);
+            return list;
+        }
         public List<string> SelectExistDateData(string reportDate)
         {
             string sqlstr =

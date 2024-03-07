@@ -124,19 +124,84 @@ namespace JDI_ReportMaker.Util
                 {
                     //將面板內容寫入Excel
                     DailyReportWriter dailyReportWriter = new DailyReportWriter(this);
-                    if (dailyReportWriter.CheckDataRepeat())
-                    {
-                        dailyReportWriter.WriteTodayPanel(panels, target);
-                        dailyReportWriter.WriteTomorrowPanel(tomorrowPanels, target);
-                        string fileNameDate = defaultSetting.Default.date;
-                        saveFile(target, targetType,fileNameDate);
-                    }
+                    WriteWorkHourDB(panels);
+                    dailyReportWriter.WriteTodayPanel(panels, target);
+                    dailyReportWriter.WriteTomorrowPanel(tomorrowPanels, target);
+                    string fileNameDate = defaultSetting.Default.date;
+                    saveFile(target, targetType, fileNameDate);
                 }
 
             }
             catch { throw; }
         }
+        /// <summary>
+        /// 將欄位資料寫入工時表資料庫
+        /// </summary>
+        /// <param name="todayReportPanel"></param>
+        private void WriteWorkHourDB(List<TodayReportPanel> panels)
+        {
+            if (CheckDataRepeat())
+            {
+                foreach(TodayReportPanel panel in panels)
+                {
+                    InsertPanelToDB(panel);
+                }
+            }
 
+        }
+        private void InsertPanelToDB(TodayReportPanel panel)
+        {
+            if (DBDataIsOk(panel))
+            {
+                string projectName = panel.GetProjectName();
+                string projectCode = panel.GetProjectCode();
+                string hourSpend = panel.GetWorkHour();
+                string reportTime = defaultSetting.Default.date;
+                dbController.InsertWorkHour(reportTime, projectCode, projectName, hourSpend);
+            }
+        }
+
+        private bool DBDataIsOk(TodayReportPanel panel)
+        {
+            bool projectChosen =!panel.GetProjectName().Equals("未選擇專案");
+            bool hourCorrect = CheckWorkHourInput(panel.GetWorkHour());
+            MessageBox.Show(projectChosen + " " + hourCorrect);
+
+            return projectChosen && hourCorrect;
+        }
+
+        private bool CheckWorkHourInput(string workHour)
+        {
+            if(int.TryParse(workHour, out int hour))
+            {
+                return hour > 0 && hour < 9;
+            }
+            return false;
+        }
+
+        public bool CheckDataRepeat()
+        {
+            //確認資料出現重複日期 並且確定覆蓋後 寫入工時表資料庫
+            bool replaceOldData = true;
+            string targetDate = defaultSetting.Default.date;
+            if (DayDataRepeat(targetDate))
+            {
+                replaceOldData = WarningBox($"資料庫中已有{targetDate}的資料，繼續執行將刪除原有資料\n");
+                if (replaceOldData)
+                {
+                    dbController.DeleteTargetDateReport(targetDate);
+                    return true;
+                }
+                else { return false; }
+            }
+            return true;
+        }
+        private bool DayDataRepeat(string date)
+        {
+            List<string> list = dbController.SelectExistDateData(date);
+            return list.Count > 0 ? true : false;
+
+        }
 
         /// <summary>
         /// 檢查面板內容並彈出提醒視窗
@@ -153,7 +218,7 @@ namespace JDI_ReportMaker.Util
                 string index=panel.GetPanelNum();
                 if (panel.GetProjectName() == "未選擇專案")
                 {
-                    problemList += $"第{index}欄尚未選擇專案項目\n";
+                    problemList += $"第{index}欄尚未選擇專案項目 資料將不會記錄至資料庫\n";
                 }
                 if (panel.GetTitle().Length == 0)
                 {
@@ -163,11 +228,14 @@ namespace JDI_ReportMaker.Util
                 {
                     problemList += $"第{index}欄未輸入細項說明\n";
                 }
-                if (panel.GetWorkHour().Equals("0"))
+                if (!int.TryParse(panel.GetWorkHour(),out int hour))
                 {
-                    problemList += $"第{index}欄未輸入工時\n";
+                    problemList += $"第{index}欄未輸入工時 資料將不會記錄至資料庫\n";
                 }
-                totalWorkHourToday +=int.Parse(panel.GetWorkHour());
+                else
+                {
+                    totalWorkHourToday+= hour;  
+                }
             }
             //工時總結異常時
             if(totalWorkHourToday !=8)
@@ -269,7 +337,7 @@ namespace JDI_ReportMaker.Util
             }
             catch(Exception e)
             {
-                MessageBox.Show("檔案路徑異常或目標檔案正開啟\n"+e.Message);
+                //MessageBox.Show("檔案路徑異常或目標檔案正開啟\n"+e.Message);
                 return null;
             }
         }

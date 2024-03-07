@@ -47,6 +47,7 @@ namespace JDI_ReportMaker
             resultLabel.Content = "";
             setDate();
             writeDatabaseAndExcel();
+            checkWorkHourDB();
         }
 
         private void settingWindowButton_Click(object sender, RoutedEventArgs e)
@@ -104,9 +105,26 @@ namespace JDI_ReportMaker
             }
             else
             {
+                checkWorkHourDB();
                 InitialPanel();
             }
         }
+
+        private void checkWorkHourDB()
+        {
+            if(dbController.SelectWorkHourReport().Count == 0)
+            {
+                workHourPageButton.IsEnabled = false;
+                workHourLabel.Content = "工時表紀錄為空";
+            }
+            else
+            {
+                workHourLabel.Content = "";
+                workHourPageButton.IsEnabled = true;
+
+            }
+        }
+
         /// <summary>
         /// 將部分功能關閉以避免錯誤操作
         /// </summary>
@@ -233,6 +251,7 @@ namespace JDI_ReportMaker
                 logLabel.Content = ex.Message;
             }
         }
+        
         /// <summary>
         /// 打開設定視窗
         /// </summary>
