@@ -124,7 +124,7 @@ namespace JDI_ReportMaker.Util
                 {
                     //將面板內容寫入Excel
                     DailyReportWriter dailyReportWriter = new DailyReportWriter(this);
-                    WriteWorkHourDB(panels);
+                    WriteWorkHourDB(panels,tomorrowPanels);
                     dailyReportWriter.WriteTodayPanel(panels, target);
                     dailyReportWriter.WriteTomorrowPanel(tomorrowPanels, target);
                     string fileNameDate = defaultSetting.Default.date;
@@ -138,35 +138,71 @@ namespace JDI_ReportMaker.Util
         /// 將欄位資料寫入工時表資料庫
         /// </summary>
         /// <param name="todayReportPanel"></param>
-        private void WriteWorkHourDB(List<TodayReportPanel> panels)
+        private void WriteWorkHourDB(List<TodayReportPanel> panels, List<TomorrowReportPanel> tomorrowPanels)
         {
             if (CheckDataRepeat())
             {
                 foreach(TodayReportPanel panel in panels)
                 {
-                    InsertPanelToDB(panel);
+                    if (DBDataIsOk(panel))
+                    {
+                        InsertPanelToDB(panel);
+                        InsertTodayPanel(panel);
+                    }
+                }
+                foreach(TomorrowReportPanel panel in tomorrowPanels)
+                {
+                    if (panel.GetTitle().Length > 0 && panel.GetDescribtion().Length > 0)
+                    {
+                        InsertTomorrowPanel(panel);
+                    }
                 }
             }
 
         }
+
+        private void InsertTomorrowPanel(TomorrowReportPanel panel)
+        {
+            string title=panel.GetTitle();
+            string describtion=panel.GetDescribtion();
+            string reportTime = defaultSetting.Default.date;
+            dbController.InsertTomorrowPanel(reportTime,title,describtion);
+        }
+
+        /// <summary>
+        /// 紀錄日報表內容
+        /// </summary>
+        /// <param name="panel"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void InsertTodayPanel(TodayReportPanel panel)
+        {
+            string projectName = panel.GetProjectName();
+            string hourSpend = panel.GetWorkHour();
+            string reportTime = defaultSetting.Default.date;
+            string projectTitle = panel.GetTitle();
+            string projectDescr = panel.GetDescribtion();
+            bool jobDone = panel.GetDone();
+            dbController.InsertTodayPanel(reportTime, projectName, projectTitle, projectDescr, hourSpend, jobDone);
+        }
+
+        /// <summary>
+        /// 紀錄工時表內容
+        /// </summary>
+        /// <param name="panel"></param>
         private void InsertPanelToDB(TodayReportPanel panel)
         {
-            if (DBDataIsOk(panel))
-            {
-                string projectName = panel.GetProjectName();
-                string projectCode = panel.GetProjectCode();
-                string hourSpend = panel.GetWorkHour();
-                string reportTime = defaultSetting.Default.date;
-                dbController.InsertWorkHour(reportTime, projectCode, projectName, hourSpend);
-            }
+            string projectName = panel.GetProjectName();
+            string projectCode = panel.GetProjectCode();
+            string hourSpend = panel.GetWorkHour();
+            string reportTime = defaultSetting.Default.date;
+            dbController.InsertWorkHour(reportTime, projectCode, projectName, hourSpend);
         }
 
         private bool DBDataIsOk(TodayReportPanel panel)
         {
             bool projectChosen =!panel.GetProjectName().Equals("未選擇專案");
             bool hourCorrect = CheckWorkHourInput(panel.GetWorkHour());
-            MessageBox.Show(projectChosen + " " + hourCorrect);
-
+            bool titleDescrib = panel.GetTitle().Length < 1 && panel.GetDescribtion().Length < 1;
             return projectChosen && hourCorrect;
         }
 
@@ -189,7 +225,7 @@ namespace JDI_ReportMaker.Util
                 replaceOldData = WarningBox($"資料庫中已有{targetDate}的資料，繼續執行將刪除原有資料\n");
                 if (replaceOldData)
                 {
-                    dbController.DeleteTargetDateReport(targetDate);
+                    dbController.DeleteOneDayData(targetDate);
                     return true;
                 }
                 else { return false; }

@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 namespace JDI_ReportMaker.Util.PanelComponent
 {
-    internal class TomorrowReportPanel:StackPanelComponent
+    public class TomorrowReportPanel:StackPanelComponent
     {
         private StackPanel? thisPanel;
         private Label? numLabel;
@@ -25,6 +25,11 @@ namespace JDI_ReportMaker.Util.PanelComponent
             //連接主畫面
             parentWindow = mainWindow;
             tomorrowPanels=parentWindow.GetTomorrowPanels();
+        }
+
+        public void SetPanelList(List<TomorrowReportPanel> panelList)
+        {
+            tomorrowPanels = panelList;
         }
         public override StackPanel CreatePanel()
         {
@@ -102,6 +107,15 @@ namespace JDI_ReportMaker.Util.PanelComponent
         }
         public string GetPanelNum() { return numLabel.Content.ToString(); }
         public string GetTitle() { return projectTitle.Text; }
+
+        public void SetTitle(string text)
+        {
+            projectTitle.Text= text;
+        }
         public string GetDescribtion() { return projectDescription.Text; }
+        public void SetDescribtion(string text)
+        {
+            projectDescription.Text= text;
+        }
     }
 }

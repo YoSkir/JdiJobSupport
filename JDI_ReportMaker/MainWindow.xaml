@@ -9,7 +9,7 @@
         <Button x:Name="saveFileButton" Content="存檔" HorizontalAlignment="Left" Margin="1038,622,0,0" VerticalAlignment="Top" Click="SaveFileButton_Click" Height="32" Width="37"/>
         <Label x:Name="resultLabel" HorizontalAlignment="Left" Margin="1112,625,0,0" VerticalAlignment="Top" Foreground="White" Width="134" Height="26"/>
         <Label Content="日期(今日免填)" HorizontalAlignment="Left" Margin="31,15,0,0" VerticalAlignment="Top" Grid.Column="2"/>
-        <DatePicker x:Name="datePicker" HorizontalAlignment="Left" Margin="134,15,0,0" VerticalAlignment="Top" Grid.Column="2"/>
+        <DatePicker x:Name="datePicker" HorizontalAlignment="Left" Margin="134,15,0,0" VerticalAlignment="Top" Grid.Column="2" SelectedDateChanged="datePicker_SelectedDateChanged"/>
         <Button x:Name="dataConfirmButton" Content="設定" HorizontalAlignment="Left" Margin="1038,413,0,0" VerticalAlignment="Top" Click="settingWindowButton_Click" Width="72"/>
         <Label x:Name="logLabel" Content="" HorizontalAlignment="Center" Margin="0,681,0,0" VerticalAlignment="Top" Width="1212" Height="97"/>
         <Button x:Name="todayButton" Content="重置日期為今天" HorizontalAlignment="Left" Margin="234,15,0,0" VerticalAlignment="Top" Click="todayButton_Click" Width="89"/>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Asn1.Cmp;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -11,12 +12,14 @@ using System.Windows.Media;
 
 namespace JDI_ReportMaker.Util.PanelComponent
 {
-    internal class TodayReportPanel : StackPanelComponent
+    public class TodayReportPanel : StackPanelComponent
     {
         private StackPanel? thisPanel;
         private Label? numLabel;
         private ComboBox? comboBox;
-        private TextBox? projectTitle, projectDescription, hourSpent;
+        private TextBox? projectTitle;
+        private TextBox? projectDescription;
+        private TextBox? hourSpent;
         private CheckBox? doneCheck;
         private Button? addBtn, removeBtn;
         private MainWindow parentWindow;
@@ -33,6 +36,11 @@ namespace JDI_ReportMaker.Util.PanelComponent
             //創造面板
             CreatePanel();
             //連接主畫面
+        }
+
+        public void SetPanelList(List<TodayReportPanel> panelList)
+        {
+            todayPanels = panelList;
         }
         public override StackPanel GetPanel()
         {
@@ -146,10 +154,18 @@ namespace JDI_ReportMaker.Util.PanelComponent
         }
         public string GetPanelNum() { return numLabel.Content.ToString(); }
         public string GetTitle() { return projectTitle.Text; }
+        public void SetTitle(string text)
+        {
+            projectTitle.Text= text;
+        }
         public string GetProjectName() 
         {
             if (comboBox.SelectedIndex == -1) return "未選擇專案";
             return comboBox.Text; 
+        }
+        public void SetComboBoxText(string text)
+        {
+            comboBox.Text=text;
         }
         public string GetProjectCode() 
         {
@@ -157,10 +173,22 @@ namespace JDI_ReportMaker.Util.PanelComponent
             return projectsNameCode[comboBox.Text]; 
         }
         public string GetDescribtion() { return projectDescription.Text; }
+        public void SetDescribtion(string text)
+        {
+            projectDescription.Text= text;
+        }
         public string GetWorkHour()
         {
             return hourSpent.Text;
         }
+        public void SetWorkHour(string hour)
+        {
+            hourSpent.Text= hour;
+        }
         public bool GetDone() { return doneCheck.IsChecked == true; }
+        public void SetDone(bool done)
+        {
+            doneCheck.IsChecked= done;
+        }
     }
 }

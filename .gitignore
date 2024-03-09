@@ -1,2 +1,4 @@
 #忽略資料庫檔案
 \JDI_ReportMaker\bin\Debug\net8.0-windows\JJSDatabase.sqlite
+JDI_ReportMaker/bin/Release/net8.0-windows/publish/JJSDatabase.sqlite
+JDI_ReportMaker/bin/Release/net8.0-windows/publish/JJSDatabase.sqlite

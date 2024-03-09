@@ -40,6 +40,7 @@ namespace JDI_ReportMaker
         {
             InitializeComponent();
             initialData();
+            logLabel.Content = "輸出完成後請開啟並檢查輸出的報表。 如有未選擇專案、留空或工時填寫錯誤將不會存進資料庫，請填寫完全。";
         }
 
         private void SaveFileButton_Click(object sender, RoutedEventArgs e)
@@ -47,6 +48,7 @@ namespace JDI_ReportMaker
             resultLabel.Content = "";
             setDate();
             writeDatabaseAndExcel();
+            //重置工時表按鈕狀態
             checkWorkHourDB();
         }
 
@@ -83,7 +85,7 @@ namespace JDI_ReportMaker
         private void workHourSheet_Click(object sender, RoutedEventArgs e)
         {
             setDate();
-            dbController = new DBController();
+            dbController = new DBController(this);
             workHourReportPage = new WorkHourReportPage(this);
             workHourReportPage.Show();
         }
@@ -112,7 +114,7 @@ namespace JDI_ReportMaker
 
         private void checkWorkHourDB()
         {
-            if(dbController.SelectWorkHourReport().Count == 0)
+            if (dbController.SelectWorkHourReport().Count == 0)
             {
                 workHourPageButton.IsEnabled = false;
                 workHourLabel.Content = "工時表紀錄為空";
@@ -156,7 +158,7 @@ namespace JDI_ReportMaker
             todayButton.IsEnabled = true;
             weeklyReportPageButton.IsEnabled = true;
             workHourPageButton.IsEnabled = true;
-            datePicker.IsEnabled=true;
+            datePicker.IsEnabled = true;
         }
 
         /// <summary>
@@ -164,16 +166,20 @@ namespace JDI_ReportMaker
         /// </summary>
         private void InitialPanel()
         {
-            if (todayPanels == null|| todayPanels.Count == 0)
+            setDate();
+            string date = defaultSetting.Default.date;
+            todayPanels = dbController.GetTodayPanelList(date);
+            tomorrowPanels = dbController.GetTomorrowPanelList(date);
+            if (todayPanels == null || todayPanels.Count == 0)
             {
-                todayPanels = new List<TodayReportPanel> ();
+                todayPanels = new List<TodayReportPanel>();
                 TodayReportPanel panel = new TodayReportPanel(this);
                 todayPanels.Add(panel);
             }
-            if (tomorrowPanels == null|| tomorrowPanels.Count == 0)
+            if (tomorrowPanels == null || tomorrowPanels.Count == 0)
             {
                 tomorrowPanels = new List<TomorrowReportPanel>();
-                TomorrowReportPanel panel=new TomorrowReportPanel(this);
+                TomorrowReportPanel panel = new TomorrowReportPanel(this);
                 tomorrowPanels.Add(panel);
             }
             ShowPanel();
@@ -189,15 +195,15 @@ namespace JDI_ReportMaker
         }
         internal DBController GetDBController()
         {
-            if (dbController==null)
+            if (dbController == null)
             {
-                dbController = new DBController();
+                dbController = new DBController(this);
             }
             return dbController;
         }
         internal WorkHourReportPage GetWorkHourReportPage()
         {
-            if(workHourReportPage == null)workHourReportPage=new WorkHourReportPage(this);
+            if (workHourReportPage == null) workHourReportPage = new WorkHourReportPage(this);
             return workHourReportPage;
         }
         /// <summary>
@@ -251,7 +257,7 @@ namespace JDI_ReportMaker
                 logLabel.Content = ex.Message;
             }
         }
-        
+
         /// <summary>
         /// 打開設定視窗
         /// </summary>
@@ -331,7 +337,31 @@ namespace JDI_ReportMaker
 
         private void deleteTodayDataButton_Click(object sender, RoutedEventArgs e)
         {
+            if (WarningBox("刪除今日(選擇的日期)的日報表、工時表紀錄?"))
+            {
+                string reportDate = defaultSetting.Default.date;
+                dbController.DeleteOneDayData(reportDate);
+                InitialPanel();
+            }
+        }
 
+        private void datePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            setDate();
+            if (WarningBox("更換日期是否讀取當天之報表?\n(如果你報表剛打好還沒儲存，只是要換日期請按否)"))
+            {
+                InitialPanel();
+            }
+        }
+
+        private bool WarningBox(string msg)
+        {
+            MessageBoxResult result = MessageBox.Show(msg, "警告", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Yes)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

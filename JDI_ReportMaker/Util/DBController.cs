@@ -8,24 +8,32 @@ using System.Data.SQLite;
 using System.Windows;
 using JDI_ReportMaker.Util;
 using NPOI.Util.Collections;
+using NPOI.HSSF.Record;
+using JDI_ReportMaker.Util.PanelComponent;
 
 namespace JDI_ReportMaker
 {
     public class DBController
     {
         private SQLiteConnection? connection;
+        private MainWindow mainWindow;
 
 
 
-        public DBController()
+        public DBController(MainWindow mainWindow)
         {
             try
             {
                 connection = GetConnection(Const.DatabaseFileName);
                 Connect();
                 CreateTable();
-            }catch (Exception ex) { MessageBox.Show("資料庫創建失敗"); }
+                CreateDailyReportTable();
+                CreateTomorrowReportTable();
+                CreateWeekReportTable();
+            }
+            catch (Exception ex) { MessageBox.Show("資料庫創建失敗"); }
 
+            this.mainWindow = mainWindow;
         }
 
         public SQLiteConnection GetConnection(string dbName)
@@ -72,18 +80,135 @@ namespace JDI_ReportMaker
         {
             string sqlStr = "";
             sqlStr +=
-                "CREATE TABLE IF NOT EXISTS daily_report " +
+                "CREATE TABLE IF NOT EXISTS daily_report_today " +
                 "(" +
                 "report_date DATETIME NOT NULL," +
-                "project_name VARCHAR(100), " +
-                "project_title VARCHAR(100) " +
-                "project_describe VARCHAR(100) "+
-                "hour_spent TINYINT(5) " +
-                "jobDone bool " +
+                "project_name VARCHAR(100) NOT NULL, " +
+                "project_title VARCHAR(100) NOT NULL, " +
+                "project_describe VARCHAR(100) NOT NULL, " +
+                "hour_spent TINYINT(5) NOT NULL, " +
+                "jobDone BOOLEAN NOT NULL" +
                 "); ";
             SQLiteCommand cmd = new SQLiteCommand(sqlStr, connection);
             cmd.ExecuteNonQuery();
         }
+
+        internal void InsertTodayPanel(string reportTime, string projectName, string projectTitle, string projectDescr, string hourSpend, bool jobDone)
+        {
+            string sqlstr =
+                "INSERT INTO daily_report_today " +
+                "(report_date,project_name,project_title,project_describe,hour_spent,jobDone) " +
+                "VALUES " +
+                $"('{reportTime}','{projectName}','{projectTitle}','{projectDescr}',{hourSpend},'{jobDone}'); ";
+            SQLiteCommand cmd = new SQLiteCommand(sqlstr, connection);
+            cmd.ExecuteNonQuery();
+        }
+        private void DeleteTargetDateTodayPanel(string reportDate)
+        {
+            string paramName = "@TargetDate";
+            string sqlstr =
+                "DELETE FROM daily_report_today " +
+               $"WHERE report_date={paramName} ";
+            ExecuteDeleteCmd(sqlstr, paramName, reportDate,"日報表今日事項");
+        }
+
+        public List<TodayReportPanel> GetTodayPanelList(string reportDate)
+        {
+            string sqlStr = GetTodayPanelListSqlStr(reportDate);
+            List<TodayReportPanel> recordList = new List<TodayReportPanel>();
+            var command = new SQLiteCommand(sqlStr, connection);
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    TodayReportPanel panel = new TodayReportPanel(mainWindow);
+
+                    panel.SetComboBoxText(reader["project_name"].ToString());
+                    panel.SetTitle(reader["project_title"].ToString());
+                    panel.SetDescribtion(reader["project_describe"].ToString());
+                    panel.SetWorkHour(reader["hour_spent"].ToString());
+                    panel.SetDone(Convert.ToBoolean(reader["jobDone"]));
+                    panel.SetPanelList(recordList);
+                    recordList.Add(panel);
+                }
+            }
+            return recordList;
+        }
+
+        private string GetTodayPanelListSqlStr(string reportDate)
+        {
+            string sqlstr = "";
+            sqlstr +=
+                "SELECT project_name,project_title,project_describe,hour_spent,jobDone " +
+                "FROM daily_report_today " +
+               $"WHERE report_date='{reportDate}' ";
+            return sqlstr;
+        }
+
+        private void CreateTomorrowReportTable()
+        {
+            string sqlStr = "";
+            sqlStr +=
+                "CREATE TABLE IF NOT EXISTS daily_report_tomorrow " +
+                "(" +
+                "report_date DATETIME NOT NULL," +
+                "project_title VARCHAR(100) NOT NULL, " +
+                "project_describe VARCHAR(100) NOT NULL " +
+                "); ";
+            SQLiteCommand cmd = new SQLiteCommand(sqlStr, connection);
+            cmd.ExecuteNonQuery();
+        }
+
+        internal void InsertTomorrowPanel(string reportTime,string title, string describtion)
+        {
+            string sqlstr =
+                "INSERT INTO daily_report_tomorrow " +
+                "(report_date,project_title,project_describe) " +
+                "VALUES " +
+                $"('{reportTime}','{title}','{describtion}'); ";
+            SQLiteCommand cmd = new SQLiteCommand(sqlstr, connection);
+            cmd.ExecuteNonQuery();
+        }
+
+        private void DeleteTargetDateTomorrowPanel(string reportDate)
+        {
+            string paramName = "@TargetDate";
+            string sqlstr =
+                "DELETE FROM daily_report_tomorrow " +
+               $"WHERE report_date={paramName} ";
+            ExecuteDeleteCmd(sqlstr, paramName, reportDate,"日報表明日事項");
+        }
+
+        public List<TomorrowReportPanel> GetTomorrowPanelList(string reportDate)
+        {
+            string sqlStr = GetTomorrowPanelListSqlStr(reportDate);
+            List<TomorrowReportPanel> recordList = new List<TomorrowReportPanel>();
+            var command = new SQLiteCommand(sqlStr, connection);
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    TomorrowReportPanel panel = new TomorrowReportPanel(mainWindow);
+
+                    panel.SetTitle(reader["project_title"].ToString());
+                    panel.SetDescribtion(reader["project_describe"].ToString());
+                    panel.SetPanelList(recordList);
+                    recordList.Add(panel);
+                }
+            }
+            return recordList;
+        }
+
+        private string GetTomorrowPanelListSqlStr(string reportDate)
+        {
+            string sqlstr = "";
+            sqlstr +=
+                "SELECT project_title,project_describe " +
+                "FROM daily_report_tomorrow " +
+               $"WHERE report_date='{reportDate}' ";
+            return sqlstr;
+        }
+
         /// <summary>
         /// 創建儲存周報表的Table
         /// </summary>
@@ -93,34 +218,34 @@ namespace JDI_ReportMaker
             sqlStr +=
                 "CREATE TABLE IF NOT EXISTS week_report " +
                 "(" +
-                "year tinyint(8), " +
-                "month tinyint(4) " +
-                "mon_title1 VARCHAR(100) " +
-                "mon_title2 VARCHAR(100) " +
-                "mon_discr1 VARCHAR(100) " +
-                "mon_discr2 VARCHAR(100) " +
+                "year tinyint(8) NOT NULL, " +
+                "month tinyint(4) NOT NULL, " +
+                "mon_title1 VARCHAR(100), " +
+                "mon_title2 VARCHAR(100), " +
+                "mon_discr1 VARCHAR(100), " +
+                "mon_discr2 VARCHAR(100), " +
 
-                "tue_title1 VARCHAR(100) " +
-                "tue_title2 VARCHAR(100) " +
-                "tue_discr1 VARCHAR(100) " +
-                "tue_discr2 VARCHAR(100) " +
+                "tue_title1 VARCHAR(100), " +
+                "tue_title2 VARCHAR(100), " +
+                "tue_discr1 VARCHAR(100), " +
+                "tue_discr2 VARCHAR(100), " +
 
-                "wed_title1 VARCHAR(100) " +
-                "wed_title2 VARCHAR(100) " +
-                "wed_discr1 VARCHAR(100) " +
-                "wed_discr2 VARCHAR(100) " +
+                "wed_title1 VARCHAR(100), " +
+                "wed_title2 VARCHAR(100), " +
+                "wed_discr1 VARCHAR(100), " +
+                "wed_discr2 VARCHAR(100), " +
 
-                "thr_title1 VARCHAR(100) " +
-                "thr_title2 VARCHAR(100) " +
-                "thr_discr1 VARCHAR(100) " +
-                "thr_discr2 VARCHAR(100) " +
+                "thr_title1 VARCHAR(100), " +
+                "thr_title2 VARCHAR(100), " +
+                "thr_discr1 VARCHAR(100), " +
+                "thr_discr2 VARCHAR(100), " +
 
-                "fri_title1 VARCHAR(100) " +
-                "fri_title2 VARCHAR(100) " +
-                "fri_discr1 VARCHAR(100) " +
-                "fri_discr2 VARCHAR(100) " +
+                "fri_title1 VARCHAR(100), " +
+                "fri_title2 VARCHAR(100), " +
+                "fri_discr1 VARCHAR(100), " +
+                "fri_discr2 VARCHAR(100), " +
 
-                "sat_title1 VARCHAR(100) " +
+                "sat_title1 VARCHAR(100), " +
                 "sat_title2 VARCHAR(100) " +
                 "); ";
             SQLiteCommand cmd = new SQLiteCommand(sqlStr, connection);
@@ -156,13 +281,13 @@ namespace JDI_ReportMaker
             return list;
         }
 
-        public void DeleteTargetDateReport(string reportDate)
+        private void DeleteTargetDateReport(string reportDate)
         {
             string paramName="@TargetDate";
             string sqlstr =
                 "DELETE FROM work_hour " +
                $"WHERE report_date={paramName} ";
-            ExecuteDeleteCmd(sqlstr, paramName, reportDate);
+            ExecuteDeleteCmd(sqlstr, paramName, reportDate,"工時表紀錄 ");
         }
 
         public void DeleteTestData()
@@ -171,17 +296,17 @@ namespace JDI_ReportMaker
             string sqlStr =
                 "DELETE FROM work_hour " +
                 "WHERE report_date< @TargetDate ";
-            ExecuteDeleteCmd(sqlStr, paramName, "2024-2-16");
+            ExecuteDeleteCmd(sqlStr, paramName, "2024-2-16","全部資料");
         }
 
-        private void ExecuteDeleteCmd(string sqlStr,string paramName,string paramValue)
+        private void ExecuteDeleteCmd(string sqlStr,string paramName,string paramValue, string msg)
         {
             using(var command=new SQLiteCommand(sqlStr, connection))
             {
                 //使用addWithValue避免資料庫注入攻擊
                 command.Parameters.AddWithValue(paramName, paramValue);
                 int deletedRow=command.ExecuteNonQuery();
-                MessageBox.Show($"{deletedRow}項資料已移除");
+                MessageBox.Show($"{msg} {deletedRow}項資料已移除");
             }
         }
 
@@ -327,6 +452,13 @@ namespace JDI_ReportMaker
                 }
             }
             return result;
+        }
+
+        public void DeleteOneDayData(string reportDate)
+        {
+            DeleteTargetDateReport(reportDate);
+            DeleteTargetDateTodayPanel(reportDate);
+            DeleteTargetDateTomorrowPanel(reportDate);
         }
     }
 }

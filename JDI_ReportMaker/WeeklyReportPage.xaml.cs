@@ -181,6 +181,7 @@ namespace JDI_ReportMaker
                     SetThisWeekArr();
                     IWorkbook target = sourceController.staffDataWrite(fileType);
                     DrawCalender(target);
+                    WriteWeekReportDB();
                     WritePanelToExcel(target);
                     SaveWeeklyReport(target);
                     MessageBox.Show("儲存成功");
@@ -189,6 +190,11 @@ namespace JDI_ReportMaker
             }
             catch { MessageBox.Show("儲存失敗"); }
 
+        }
+
+        private void WriteWeekReportDB()
+        {
+            throw new NotImplementedException();
         }
 
         private void SaveWeeklyReport(IWorkbook target)
