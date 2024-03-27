@@ -58,3 +58,4 @@ D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\bin\Debug\net8.0-windows\runt
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\bin\Debug\net8.0-windows\runtimes\win-x86\native\SQLite.Interop.dll
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\bin\Debug\net8.0-windows\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\bin\Debug\net8.0-windows\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Debug\net8.0-windows\JDI_ReportMaker_Content.g.cs

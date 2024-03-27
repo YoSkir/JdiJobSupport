@@ -58,3 +58,4 @@ D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Release\net8.0-windows\re
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Release\net8.0-windows\JDI_ReportMaker.pdb
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Release\net8.0-windows\JDI_ReportMaker.genruntimeconfig.cache
 D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Release\net8.0-windows\ref\JDI_ReportMaker.dll
+D:\YoskirCoding\C#\JDI_ReportMaker\JDI_ReportMaker\obj\Release\net8.0-windows\JDI_ReportMaker_Content.g.cs

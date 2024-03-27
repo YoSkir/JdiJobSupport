@@ -40,7 +40,8 @@ namespace JDI_ReportMaker
         {
             InitializeComponent();
             initialData();
-            logLabel.Content = "輸出完成後請開啟並檢查輸出的報表。 如有未選擇專案、留空或工時填寫錯誤將不會存進資料庫，請填寫完全。";
+            logLabel.Content = "輸出完成後請開啟並檢查輸出的報表。 如有未選擇專案、留空或工時填寫錯誤將不會存進資料庫，請填寫完全。" +
+                "\n日報表資料有儲存功能，輸出日報表即儲存，選擇日期即可讀取當日填寫的報表。";
         }
 
         private void SaveFileButton_Click(object sender, RoutedEventArgs e)
@@ -249,12 +250,11 @@ namespace JDI_ReportMaker
                 //做報表種類判斷
                 sourceController.WritePanelToExcel(todayPanels, tomorrowPanels);
                 resultLabel.Content = "儲存成功";
-                logLabel.Content = "";
             }
             catch (Exception ex)
             {
                 resultLabel.Content = "儲存失敗";
-                logLabel.Content = ex.Message;
+                MessageBox.Show(ex.Message);
             }
         }
 

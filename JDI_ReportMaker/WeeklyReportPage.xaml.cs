@@ -32,6 +32,7 @@ namespace JDI_ReportMaker
         private MainWindow? parent;
         private int thisMonth = DateTime.Now.Month;
         private int thisYear = DateTime.Now.Year;
+        private string defaultComboBoxText;
 
         public WeeklyReportPage(MainWindow mainWindow)
         {
@@ -49,8 +50,8 @@ namespace JDI_ReportMaker
         private void SetWeekComboBox()
         {
             weekCbox.IsEditable = true;
-            weekCbox.Text = "請選擇期間(默認本週)";
-            weekCbox.ItemsSource=GetWeekList(thisYear,thisMonth);
+            weekCbox.ItemsSource = GetWeekList(thisYear, thisMonth);
+            weekCbox.Text = defaultComboBoxText;
         }
         /// <summary>
         /// 獲得下拉選單要用的本月每個週間
@@ -60,26 +61,43 @@ namespace JDI_ReportMaker
         {
             List<string> weekList = new List<string>();
 
-            int weekCount = 1;
             DateTime date = new DateTime(thisYear, thisMonth, 1);
-            //因為每個月最後一週有可能到下個月的前幾天，所以從本月第一個禮拜一開始
+            DateTime nextTwoMonth = date.AddMonths(2);
+            date = date.AddMonths(-1);
+            int weekCount = 1;
+            int currentMonth = date.Month;
+            //生成前後月份共三個月
+            //並且初始化至下個周一
             while (date.DayOfWeek != DayOfWeek.Monday)
             {
                 date = date.AddDays(1);
             }
             //獲得本月每週區間與每週第一天
             if (everyWeekMonday == null) { everyWeekMonday = new List<DateTime>(); }
-            while (date.Month == thisMonth)
+            while (date.Month !=nextTwoMonth.Month)
             {
                 //每週第一天
                 everyWeekMonday.Add(date);
                 //每週區間
-                string week = date.ToString("yyyy-MM-dd") + "~" + date.AddDays(6).ToString("MM-dd")+$" 第{weekCount}週";
-                //判斷本週是哪個週間 將本週週間文字加上"本週"
-                if(DateTime.Today>=date&&DateTime.Today<date.AddDays(7)) { week += "(本週)"; }
+                string week = date.ToString("yyyy-MM-dd") + "~" + date.AddDays(6).ToString("MM-dd")
+                    +$"_{currentMonth}月第{weekCount}週";
+                //判斷下週是哪個週間 將下週週間文字加上"下週"
+                if(date>DateTime.Today&&DateTime.Today>date.AddDays(-7)) 
+                { 
+                    week += "(下週)";
+                    defaultComboBoxText = week;
+                }
                 date = date.AddDays(7);
                 weekList.Add(week);
-                weekCount++;
+                if (date.Month != currentMonth)
+                {
+                    weekCount = 1;
+                    currentMonth=date.Month;
+                }
+                else
+                {
+                    weekCount++;
+                }
             } 
             return weekList;
         }
@@ -89,14 +107,14 @@ namespace JDI_ReportMaker
         private void DrawCalender(IWorkbook weekReport)
         {
             ISheet sheet = sourceController.GetReportSheet(FileNameEnum.週報表, weekReport);
-            //設定月曆旁的本月份
-            string callenderTitle = DateTime.Now.ToString("yyyy/MM");
-            IRow row=sheet.GetRow(7);
-            ICell cell = row.GetCell(0);
-            cell.SetCellValue(callenderTitle+"月份");
             //畫月曆
             int currentRow = 8;
-            DateTime date = new DateTime(thisYear,thisMonth,1);
+            DateTime date = new DateTime(thisYear, thisMonth, 1);
+            //設定月曆旁的本月份
+            string callenderTitle = date.ToString("yyyy/MM");
+            IRow row = sheet.GetRow(7);
+            ICell cell = row.GetCell(0);
+            cell.SetCellValue(callenderTitle + "月份");
             //清除1號以前的格子
             int currentCell = GetCallenderCellIndex(date.DayOfWeek)-1;
             row = sheet.GetRow(currentRow);
@@ -153,11 +171,13 @@ namespace JDI_ReportMaker
         /// <param name="day"></param>
         private void SetThisWeekArr()
         {
-            DateTime day= DateTime.Today;
+            DateTime day= DateTime.Today.AddDays(7);
             //判斷如果選單有選擇特定週間
             if (weekCbox.SelectedIndex > -1)
             {
                 day = everyWeekMonday[weekCbox.SelectedIndex];
+                thisMonth=day.Month;
+                thisYear=day.Year;
             }
             while(day.DayOfWeek != DayOfWeek.Monday)
             {
@@ -181,17 +201,20 @@ namespace JDI_ReportMaker
                     SetThisWeekArr();
                     IWorkbook target = sourceController.staffDataWrite(fileType);
                     DrawCalender(target);
-                    WriteWeekReportDB();
+                    //WriteWeekReportDB();
                     WritePanelToExcel(target);
                     SaveWeeklyReport(target);
                     MessageBox.Show("儲存成功");
                     this.Close();
                 }
             }
-            catch { MessageBox.Show("儲存失敗"); }
+            catch (Exception ex){ MessageBox.Show("儲存失敗"+ex.Message); }
 
         }
-
+        /// <summary>
+        /// 將週報表寫入紀錄
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
         private void WriteWeekReportDB()
         {
             throw new NotImplementedException();
@@ -201,6 +224,10 @@ namespace JDI_ReportMaker
         {
             string[] weekName = weekCbox.Text.Split(' ');
             string fileNameDate = weekName[weekName.Length - 1];
+            if (fileNameDate.Contains("下週"))
+            {
+                fileNameDate= fileNameDate.Split("(下週)")[0];
+            }
             sourceController.saveFile(target, FileNameEnum.週報表,fileNameDate);
         }
 

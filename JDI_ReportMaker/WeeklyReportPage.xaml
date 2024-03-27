@@ -14,7 +14,7 @@
         <Label Content="周四" HorizontalAlignment="Left" Margin="10,312,0,0" VerticalAlignment="Top" Width="64"/>
         <Label Content="周五" HorizontalAlignment="Left" Margin="10,385,0,0" VerticalAlignment="Top" Width="64"/>
         <Label Content="周六" HorizontalAlignment="Left" Margin="10,460,0,0" VerticalAlignment="Top" Width="64"/>
-        <ComboBox x:Name="weekCbox" HorizontalAlignment="Left" Margin="79,45,0,0" VerticalAlignment="Top" Width="185"/>
+        <ComboBox x:Name="weekCbox" HorizontalAlignment="Left" Margin="79,45,0,0" VerticalAlignment="Top" Width="371"/>
         <Label Content="期間" HorizontalAlignment="Left" Margin="79,15,0,0" VerticalAlignment="Top" Width="93"/>
         <Label x:Name="SaveButtonLogLabel" Content="" HorizontalAlignment="Left" Margin="601,529,0,0" VerticalAlignment="Top" Width="86"/>
         <Rectangle x:Name="box1" HorizontalAlignment="Center" Height="74" Margin="0,85,0,0" Stroke="Black" VerticalAlignment="Top" Width="800" Fill="#64322F13" Panel.ZIndex="-1"/>

@@ -6,6 +6,9 @@
                       Height="800"
                       Width="1280">
     <Grid>
+        <Grid.Background>
+            <ImageBrush/>
+        </Grid.Background>
         <Button x:Name="saveFileButton" Content="存檔" HorizontalAlignment="Left" Margin="1038,622,0,0" VerticalAlignment="Top" Click="SaveFileButton_Click" Height="32" Width="37"/>
         <Label x:Name="resultLabel" HorizontalAlignment="Left" Margin="1112,625,0,0" VerticalAlignment="Top" Foreground="White" Width="134" Height="26"/>
         <Label Content="日期(今日免填)" HorizontalAlignment="Left" Margin="31,15,0,0" VerticalAlignment="Top" Grid.Column="2"/>
